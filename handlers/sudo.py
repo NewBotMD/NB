@@ -174,19 +174,19 @@ def sudo(client, message,redis):
 				Files_U = ["tg.py","locks.py","rank.py","send.py"]
 				Files_B = ["bot.py","setup.py"]
 				for fnh in Files_H:
-					url = "https://raw.githubusercontent.com/NewBotMD/NewBot/master/handlers/"+fnh
+					url = "https://raw.githubusercontent.com/NewBotMD/NB/master/handlers/"+fnh
 					out = requests.get(url).text
 					f = open("./handlers/"+fnh,"w+")
 					f.write(out)
 					f.close()
 				for fnu in Files_U:
-					url = "https://raw.githubusercontent.com/NewBotMD/NewBot/master/utlis/"+fnu
+					url = "https://raw.githubusercontent.com/NewBotMD/NB/master/utlis/"+fnu
 					out = requests.get(url).text
 					f = open("./utlis/"+fnu,"w+")
 					f.write(out)
 					f.close()
 				for fnb in Files_B:
-					url = "https://raw.githubusercontent.com/NewBotMD/NewBot/master/"+fnb
+					url = "https://raw.githubusercontent.com/NewBotMD/NB/master/"+fnb
 					out = requests.get(url).text
 					f = open("./"+fnb,"w+")
 					f.write(out)
