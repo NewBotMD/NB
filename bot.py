@@ -18,11 +18,13 @@ R = redis.Redis(charset="utf-8", decode_responses=True)
 app = Client("NB"+BOT_ID,bot_token=TOKEN,api_id = API_ID, api_hash = API_HASH)
 setsudo(R,SUDO)
 R.set("{}Nbot:BOTrank".format(BOT_ID), BOT_ID)
-
+if redis.get("{}:Nbot:restart".format(BOT_ID)):
+  Bot("sendMessage",{"chat_id":redis.get("{}:Nbot:restart".format(BOT_ID)),"text":r.Wres"parse_mode":"html"})
+  redis.delete("{}:Nbot:restart".format(BOT_ID))
 t = threading.Thread(target=Del24,args=("client", "message",R))
 t.setDaemon(True)
 t.start()
-
+#####
 @app.on_message(~Filters.edited & ~Filters.new_chat_title & ~Filters.pinned_message & ~Filters.left_chat_member & ~Filters.new_chat_photo & ~Filters.new_chat_members & ~Filters.delete_chat_photo & ~Filters.channel)
 def update(client, message):
     t = threading.Thread(target=updateHandlers,args=(client, message,R))
