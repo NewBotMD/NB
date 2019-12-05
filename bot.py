@@ -19,10 +19,11 @@ app = Client("NB"+BOT_ID,bot_token=TOKEN,api_id = API_ID, api_hash = API_HASH)
 setsudo(R,SUDO)
 R.set("{}Nbot:BOTrank".format(BOT_ID), BOT_ID)
 
-if redis.get("{}:Nbot:restart".format(BOT_ID)):
-  Bot("sendMessage",{"chat_id":redis.get("{}:Nbot:restart".format(BOT_ID)),"text":"تم اعادة تشغيل البوت - Done restart the bot","parse_mode":"html"})
-  redis.delete("{}:Nbot:restart".format(BOT_ID))
-
+if R.get("{}:Nbot:restart".format(BOT_ID)):
+  Bot("sendMessage",{"chat_id":R.get("{}:Nbot:restart".format(BOT_ID)),"text":"تم اعادة تشغيل البوت - Done restart the bot","parse_mode":"html"})
+  R.delete("{}:Nbot:restart".format(BOT_ID))
+  
+  
 t = threading.Thread(target=Del24,args=("client", "message",R))
 t.setDaemon(True)
 t.start()
