@@ -1,5 +1,5 @@
 from utlis.rank import setrank,isrank,remrank,remsudos,setsudo, GPranks,IDrank
-from utlis.send import send_msg, BYusers, GetLink,Name
+from utlis.send import send_msg, BYusers, GetLink,Name,Glang
 from utlis.locks import st,getOR
 from utlis.tg import Bot
 from config import *
@@ -20,12 +20,9 @@ def allGP(client, message,redis):
   title = message.chat.title
   rank = isrank(redis,userID,chatID)
   text = message.text
-  if redis.sismember("{}Nbot:lang:ar".format(BOT_ID),chatID):
-    lang = "ar"
-  elif redis.sismember("{}Nbot:lang:en".format(BOT_ID),chatID):
-    lang = "en"
-  else :
-    lang = "ar"
+
+  lang = Glang(redis,chatID)
+
   moduleCMD = "lang."+lang+"-cmd"
   moduleREPLY = "lang."+lang+"-reply"
   c = importlib.import_module(moduleCMD)
@@ -113,8 +110,11 @@ def allGP(client, message,redis):
     if not redis.sismember("{}Nbot:ReplySendBOT".format(BOT_ID),chatID):
       if redis.hexists("{}Nbot:TXreplys".format(BOT_ID),text):
         tx = redis.hget("{}Nbot:TXreplys".format(BOT_ID),text)
-        Bot("sendMessage",{"chat_id":chatID,"text":tx.format(fn=Name(userFn),us=("@"+username or "none"),id=userID,rk=IDrank(redis,userID,chatID,r),cn=title),"reply_to_message_id":message.message_id,"parse_mode":"html"})
-      
+        try:
+          Bot("sendMessage",{"chat_id":chatID,"text":tx.format(fn=Name(userFN),us=("@"+username or "n"),id=userID,rk=IDrank(redis,userID,chatID,r),cn=title),"reply_to_message_id":message.message_id,"parse_mode":"html"})
+        except Exception as e:
+          Bot("sendMessage",{"chat_id":chatID,"text":tx,"reply_to_message_id":message.message_id,"parse_mode":"html"})
+          
       if redis.hexists("{}Nbot:STreplys".format(BOT_ID),text):
         ID = redis.hget("{}Nbot:STreplys".format(BOT_ID),text)
         Bot("sendSticker",{"chat_id":chatID,"sticker":ID,"reply_to_message_id":message.message_id})
@@ -132,8 +132,11 @@ def allGP(client, message,redis):
     if not redis.sismember("{}Nbot:ReplySend".format(BOT_ID),chatID):
       if redis.hexists("{}Nbot:{}:TXreplys".format(BOT_ID,chatID),text):
         tx = redis.hget("{}Nbot:{}:TXreplys".format(BOT_ID,chatID),text)
-        Bot("sendMessage",{"chat_id":chatID,"text":tx.format(fn=Name(userFN),us=("@"+username or "n"),id=userID,rk=IDrank(redis,userID,chatID,r),cn=title),"reply_to_message_id":message.message_id,"parse_mode":"html"})
-      
+        try:
+          Bot("sendMessage",{"chat_id":chatID,"text":tx.format(fn=Name(userFN),us=("@"+username or "n"),id=userID,rk=IDrank(redis,userID,chatID,r),cn=title),"reply_to_message_id":message.message_id,"parse_mode":"html"})
+        except Exception as e:
+          Bot("sendMessage",{"chat_id":chatID,"text":tx,"reply_to_message_id":message.message_id,"parse_mode":"html"})
+
       if redis.hexists("{}Nbot:{}:STreplys".format(BOT_ID,chatID),text):
         ID = redis.hget("{}Nbot:{}:STreplys".format(BOT_ID,chatID),text)
         Bot("sendSticker",{"chat_id":chatID,"sticker":ID,"reply_to_message_id":message.message_id})
