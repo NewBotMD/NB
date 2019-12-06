@@ -1,5 +1,5 @@
 from utlis.rank import setrank,isrank,remrank,remsudos,setsudo,GPranks,IDrank
-from utlis.send import send_msg, BYusers, Sendto, fwdto,Name
+from utlis.send import send_msg, BYusers, Sendto, fwdto,Name,Glang
 from utlis.locks import st,getOR,Clang
 from utlis.tg import Bot
 from config import *
@@ -18,12 +18,7 @@ def updateCallback(client, callback_query,redis):
   date = json.loads(callback_query.data)
   
   group = redis.sismember("{}Nbot:groups".format(BOT_ID),chatID)
-  if redis.sismember("{}Nbot:lang:ar".format(BOT_ID),chatID):
-    lang = "ar"
-  elif redis.sismember("{}Nbot:lang:en".format(BOT_ID),chatID):
-    lang = "en"
-  else :
-    lang = "ar"
+  lang = Glang(redis,chatID)
   moduleCMD = "lang."+lang+"-cmd"
   moduleREPLY = "lang."+lang+"-reply"
   c = importlib.import_module(moduleCMD)
@@ -83,7 +78,25 @@ def updateCallback(client, callback_query,redis):
     redis.delete("{}Nbot:{}:floodClick".format(BOT_ID,userID))
 
   if group is True and int(date[2]) == userID and not redis.get("{}Nbot:floodUsers:{}".format(BOT_ID,userID)):
+    if date[0] == "ckGPs":
+      rank = isrank(redis,userID,chatID)
+      if rank == "sudo":
+        IDS = redis.smembers("{}Nbot:groups".format(BOT_ID))
+        i = 0
+        for ID in IDS:
+          get = Bot("getChat",{"chat_id":ID})
+          if not get["ok"]:
+            redis.srem("{}Nbot:groups".format(BOT_ID),chatID)
+            redis.sadd("{}Nbot:disabledgroups".format(BOT_ID),chatID)
+            NextDay_Date = datetime.datetime.today() + datetime.timedelta(days=1)
+            redis.hset("{}Nbot:disabledgroupsTIME".format(BOT_ID),chatID,str(NextDay_Date))
+            i+=1
+        pr = redis.scard("{}Nbot:privates".format(BOT_ID))
+        gp = redis.scard("{}Nbot:groups".format(BOT_ID))
+        Bot("editMessageText",{"chat_id":chatID,"text":r.showstats.format(gp,pr)+r.Dckg.format(i),"message_id":message_id,"parse_mode":"html","disable_web_page_preview":True})
 
+      else:
+        Bot("answerCallbackQuery",{"callback_query_id":callback_query.id,"text":r.SudoOnle,"show_alert":True})
     if date[0] == "Chlang":
       name = date[1]
       redis.srem("{}Nbot:lang:ar".format(BOT_ID),chatID)
@@ -183,9 +196,9 @@ def updateCallback(client, callback_query,redis):
     
     if date[0] == "alllist":
       reply_markup=InlineKeyboardMarkup(
-					[[InlineKeyboardButton(c.STbanall,callback_data=json.dumps(["showbanall","",userID]))
-					,InlineKeyboardButton(c.STtkall,callback_data=json.dumps(["showtkall","",userID])),]
-					])
+          [[InlineKeyboardButton(c.STbanall,callback_data=json.dumps(["showbanall","",userID]))
+          ,InlineKeyboardButton(c.STtkall,callback_data=json.dumps(["showtkall","",userID])),]
+          ])
       Bot("editMessageText",{"chat_id":chatID,"text":r.banlist,"message_id":message_id,"parse_mode":"html","reply_markup":reply_markup})
     
     if date[0] == "delallban":
