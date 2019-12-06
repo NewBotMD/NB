@@ -1,5 +1,5 @@
 from utlis.rank import setrank,isrank,remrank,remsudos,setsudo,GPranks
-from utlis.send import send_msg, BYusers,sendM,GetLink
+from utlis.send import send_msg, BYusers,sendM,GetLink,Glang
 from utlis.tg import Bot,Ckuser
 from config import *
 #b
@@ -30,12 +30,7 @@ def sudo(client, message,redis):
 	title = message.chat.title
 	userFN = message.from_user.first_name
 	type = message.chat.type
-	if redis.sismember("{}Nbot:lang:ar".format(BOT_ID),chatID):
-		lang = "ar"
-	elif redis.sismember("{}Nbot:lang:en".format(BOT_ID),chatID):
-		lang = "en"
-	else :
-		lang = "ar"
+	lang = Glang(redis,chatID)
 	moduleCMD = "lang."+lang+"-cmd"
 	moduleREPLY = "lang."+lang+"-reply"
 	c = importlib.import_module(moduleCMD)
@@ -140,7 +135,8 @@ def sudo(client, message,redis):
 				Bot("sendMessage",{"chat_id":chatID,"text":r.Yrp.format(tx),"reply_to_message_id":message.message_id,"parse_mode":"html"})
 			else:
 				redis.hset("{}Nbot:stepSUDO".format(BOT_ID),userID,tx)
-				Bot("sendMessage",{"chat_id":chatID,"text":r.Sendreply % tx,"reply_to_message_id":message.message_id,"parse_mode":"html"})
+				kb = InlineKeyboardMarkup([[InlineKeyboardButton(r.MoreInfo, url="t.me/nbbot")]])
+				Bot("sendMessage",{"chat_id":chatID,"text":r.Sendreply % tx,"reply_to_message_id":message.message_id,"parse_mode":"html","reply_markup":kb})
 			
 
 
@@ -376,7 +372,8 @@ def sudo(client, message,redis):
 			if re.search(c.stats, text) and Ckuser(message):
 				pr = redis.scard("{}Nbot:privates".format(BOT_ID))
 				gp = redis.scard("{}Nbot:groups".format(BOT_ID))
-				Bot("sendMessage",{"chat_id":chatID,"text":r.showstats.format(gp,pr),"reply_to_message_id":message.message_id,"parse_mode":"html"})
+				kb = InlineKeyboardMarkup([[InlineKeyboardButton(r.CKgps,callback_data=json.dumps(["ckGPs","",userID]))]])
+				Bot("sendMessage",{"chat_id":chatID,"text":r.showstats.format(gp,pr),"reply_to_message_id":message.message_id,"parse_mode":"html","reply_markup":kb})
 			
 			if re.search(c.fwdall, text) and message.reply_to_message:
 				Bot("forwardMessage",{"chat_id":chatID,"from_chat_id":chatID,"message_id":message.reply_to_message.message_id})
