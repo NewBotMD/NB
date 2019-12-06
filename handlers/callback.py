@@ -81,16 +81,18 @@ def updateCallback(client, callback_query,redis):
     if date[0] == "ckGPs":
       rank = isrank(redis,userID,chatID)
       if rank == "sudo":
+        Bot("editMessageText",{"chat_id":chatID,"text":r.ckpr,"message_id":message_id,"parse_mode":"html","disable_web_page_preview":True})
         IDS = redis.smembers("{}Nbot:groups".format(BOT_ID))
         i = 0
         for ID in IDS:
           get = Bot("getChat",{"chat_id":ID})
-          if not get["ok"]:
-            redis.srem("{}Nbot:groups".format(BOT_ID),chatID)
-            redis.sadd("{}Nbot:disabledgroups".format(BOT_ID),chatID)
+          if get["ok"] == False:
+            redis.srem("{}Nbot:groups".format(BOT_ID),ID)
+            redis.sadd("{}Nbot:disabledgroups".format(BOT_ID),ID)
             NextDay_Date = datetime.datetime.today() + datetime.timedelta(days=1)
-            redis.hset("{}Nbot:disabledgroupsTIME".format(BOT_ID),chatID,str(NextDay_Date))
+            redis.hset("{}Nbot:disabledgroupsTIME".format(BOT_ID),ID,str(NextDay_Date))
             i+=1
+          time.sleep(0.3)
         pr = redis.scard("{}Nbot:privates".format(BOT_ID))
         gp = redis.scard("{}Nbot:groups".format(BOT_ID))
         Bot("editMessageText",{"chat_id":chatID,"text":r.showstats.format(gp,pr)+r.Dckg.format(i),"message_id":message_id,"parse_mode":"html","disable_web_page_preview":True})
