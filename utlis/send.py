@@ -222,3 +222,14 @@ def Name(name):
 def run(redis,chatID):
   redis.set("{}:Nbot:restart".format(BOT_ID),chatID)
   os.system("pm2 restart {}".format(BOT_ID))
+
+def Glang(redis,chatID):
+  if redis.sismember("{}Nbot:lang:ar".format(BOT_ID),chatID):
+    lang = "ar"
+  elif redis.sismember("{}Nbot:lang:en".format(BOT_ID),chatID):
+    lang = "en"
+  elif redis.sismember("{}Nbot:lang:arem".format(BOT_ID),chatID):
+    lang = "arem"
+  else :
+    lang = "arem"
+  return lang
