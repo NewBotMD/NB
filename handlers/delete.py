@@ -1,5 +1,5 @@
 from utlis.rank import setrank,isrank,remrank,remsudos,setsudo, GPranks
-from utlis.send import Name
+from utlis.send import Name,Glang
 from utlis.tg import Bot
 from config import *
 
@@ -20,12 +20,7 @@ def delete(client, message,redis):
     text = message.caption
   else:
     text = 0
-  if redis.sismember("{}Nbot:lang:ar".format(BOT_ID),chatID):
-    lang = "ar"
-  elif redis.sismember("{}Nbot:lang:en".format(BOT_ID),chatID):
-    lang = "en"
-  else :
-    lang = "ar"
+  lang = Glang(redis,chatID)
   moduleCMD = "lang."+lang+"-cmd"
   moduleREPLY = "lang."+lang+"-reply"
   c = importlib.import_module(moduleCMD)
