@@ -1,5 +1,5 @@
 from utlis.rank import setrank,isrank,remrank,remsudos,setsudo, GPranks
-from utlis.send import send_msg, BYusers,Name
+from utlis.send import send_msg, BYusers,Name,Glang
 from utlis.locks import st
 from utlis.tg import Bot
 from config import *
@@ -16,12 +16,7 @@ def nf(client, message,redis):
   title = message.chat.title
   rank = isrank(redis,userID,chatID)
   text = message.text
-  if redis.sismember("{}Nbot:lang:ar".format(BOT_ID),chatID):
-    lang = "ar"
-  elif redis.sismember("{}Nbot:lang:en".format(BOT_ID),chatID):
-    lang = "en"
-  else :
-    lang = "ar"
+  lang = Glang(redis,chatID)
   moduleCMD = "lang."+lang+"-cmd"
   moduleREPLY = "lang."+lang+"-reply"
   c = importlib.import_module(moduleCMD)
