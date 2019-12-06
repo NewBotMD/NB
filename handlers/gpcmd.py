@@ -1,6 +1,6 @@
 from utlis.rank import setrank,isrank,remrank,remsudos,setsudo, GPranks,Grank,IDrank
 from utlis.tg import Bot , Ckuser
-from utlis.send import send_msg, BYusers, Name
+from utlis.send import send_msg, BYusers, Name,Glang
 from utlis.locks import st,Clang
 from config import *
 
@@ -21,12 +21,7 @@ def gpcmd(client, message,redis):
   username = message.from_user.username
   if username is None:
     username = "None"
-  if redis.sismember("{}Nbot:lang:ar".format(BOT_ID),chatID):
-    lang = "ar"
-  elif redis.sismember("{}Nbot:lang:en".format(BOT_ID),chatID):
-    lang = "en"
-  else :
-    lang = "ar"
+  lang = Glang(redis,chatID)
   moduleCMD = "lang."+lang+"-cmd"
   moduleREPLY = "lang."+lang+"-reply"
   c = importlib.import_module(moduleCMD)
@@ -113,7 +108,6 @@ def gpcmd(client, message,redis):
         elif (GetGprank == "creator" or GetGprank == "administrator") or (Getrank != False or Getrank != 0):
           Bot("sendMessage",{"chat_id":chatID,"text":r.haveRank.format(Grank((Getrank or GetGprank),r)),"reply_to_message_id":message.message_id,"parse_mode":"html"})
       except Exception as e:
-        print("ccc",e)
         Bot("sendMessage",{"chat_id":chatID,"text":r.userNocc,"reply_to_message_id":message.message_id,"parse_mode":"html"})
 
     if re.search(c.unban, text):
@@ -141,7 +135,6 @@ def gpcmd(client, message,redis):
         else:
           send_msg("BNN",client, message,r.Dunban,"bans",getUser,redis)
       except Exception as e:
-        print(e)
         Bot("sendMessage",{"chat_id":chatID,"text":r.userNocc,"reply_to_message_id":message.message_id,"parse_mode":"html"})
 
     if re.search(c.TK, text):
@@ -177,7 +170,6 @@ def gpcmd(client, message,redis):
         elif (GetGprank == "creator" or GetGprank == "administrator") or (Getrank != False or Getrank != 0):
           Bot("sendMessage",{"chat_id":chatID,"text":r.haveRank.format(Grank((Getrank or GetGprank),r)),"reply_to_message_id":message.message_id,"parse_mode":"html"})
       except Exception as e:
-        print(e)
         Bot("sendMessage",{"chat_id":chatID,"text":r.userNocc,"reply_to_message_id":message.message_id,"parse_mode":"html"})
 
     if re.search(c.unTK, text):
@@ -206,9 +198,10 @@ def gpcmd(client, message,redis):
         else:
           send_msg("BNN",client, message,r.Dunrestricted,"restricteds",getUser,redis)
       except Exception as e:
-        print(e)
         Bot("sendMessage",{"chat_id":chatID,"text":r.userNocc,"reply_to_message_id":message.message_id,"parse_mode":"html"})
     if rank != "admin":
+      #if re.search(c.delIDC, text):
+
       if re.search(c.delIDC, text):
         redis.hdel("{}Nbot:SHOWid".format(BOT_ID),chatID)
         Bot("sendMessage",{"chat_id":chatID,"text":r.Ddelid,"reply_to_message_id":message.message_id,"parse_mode":"html"})
@@ -330,7 +323,8 @@ def gpcmd(client, message,redis):
           Bot("sendMessage",{"chat_id":chatID,"text":r.Yrp.format(tx),"reply_to_message_id":message.message_id,"parse_mode":"html"})
         else:
           redis.hset("{}Nbot:step".format(BOT_ID),userID,tx)
-          Bot("sendMessage",{"chat_id":chatID,"text":r.Sendreply % tx,"reply_to_message_id":message.message_id,"parse_mode":"html"})
+          kb = InlineKeyboardMarkup([[InlineKeyboardButton(r.MoreInfo, url="t.me/nbbot")]])
+          Bot("sendMessage",{"chat_id":chatID,"text":r.Sendreply % tx,"reply_to_message_id":message.message_id,"parse_mode":"html","reply_markup":kb})
 
       if re.search(c.DLreply, text):
         tx = text.replace(c.RPdreply,"")
