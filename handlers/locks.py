@@ -1,5 +1,5 @@
 from utlis.rank import setrank,isrank,remrank,remsudos,setsudo
-from utlis.send import send_msg, Name
+from utlis.send import send_msg, Name,Glang
 from utlis.tg import Bot
 import importlib
 
@@ -15,12 +15,7 @@ def locks(client, message,redis):
   rank = isrank(redis,userID,chatID)
   text = message.text
   title = message.chat.title
-  if redis.sismember("{}Nbot:lang:ar".format(BOT_ID),chatID):
-    lang = "ar"
-  elif redis.sismember("{}Nbot:lang:en".format(BOT_ID),chatID):
-    lang = "en"
-  else :
-    lang = "ar"
+  lang = Glang(redis,chatID)
   moduleCMD = "lang."+lang+"-cmd"
   moduleREPLY = "lang."+lang+"-reply"
   c = importlib.import_module(moduleCMD)
