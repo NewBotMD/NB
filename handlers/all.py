@@ -29,6 +29,16 @@ def allGP(client, message,redis):
   r = importlib.import_module(moduleREPLY)
   redis.hincrby("{}Nbot:{}:msgs".format(BOT_ID,chatID),userID)
   if text :
+    if re.search(c.sors,text):
+      kb = InlineKeyboardMarkup([[InlineKeyboardButton(r.MoreInfo, url="t.me/nbbot")]])
+      Botuser = client.get_me().username
+      Bot("sendMessage",{"chat_id":chatID,"text":r.sors.format("@"+Botuser),"disable_web_page_preview":True,"reply_to_message_id":message.message_id,"parse_mode":"markdown","reply_markup":kb})
+    
+    if re.search(c.dellink,text):
+      kb = InlineKeyboardMarkup([[InlineKeyboardButton(c.dellink2, url="https://telegram.org/deactivate")]])
+      Botuser = client.get_me().username
+      Bot("sendMessage",{"chat_id":chatID,"text":r.dellink,"disable_web_page_preview":True,"reply_to_message_id":message.message_id,"parse_mode":"markdown","reply_markup":kb})
+
     if re.search(c.ShowO,text) and (rank is not False or rank is not  0 or rank != "vip"):
       reply_markup = getOR(rank,r,userID)
       Bot("sendMessage",{"chat_id":chatID,"text":r.Showall,"reply_to_message_id":message.message_id,"parse_mode":"html","disable_web_page_preview":True,"reply_markup":reply_markup})
