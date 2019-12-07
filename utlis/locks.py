@@ -1,6 +1,8 @@
 from utlis.rank import setrank,isrank,remrank,remsudos,setsudo
 from config import *
 
+from utlis.send import Glang
+
 from pyrogram import ReplyKeyboardMarkup, InlineKeyboardMarkup, InlineKeyboardButton
 import threading, requests, time, random, re, json
 import importlib
@@ -24,6 +26,8 @@ def getOR(rank,r,userID):
   if rank == "sudo":
     reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton(r.lockC,callback_data=json.dumps(["ShowOlock","",userID])),InlineKeyboardButton(r.AdminC,callback_data=json.dumps(["ShowOadmin","",userID])),],[InlineKeyboardButton(r.OwnerC,callback_data=json.dumps(["ShowOowner","",userID])),InlineKeyboardButton(r.CreatorC,callback_data=json.dumps(["ShowOcreator","",userID])),],[InlineKeyboardButton(r.SudosC,callback_data=json.dumps(["ShowOsudos","",userID])),InlineKeyboardButton(r.SudoC,callback_data=json.dumps(["ShowOsudo","",userID])),],])
   return (reply_markup or "")
+
+
 def st(client, message,redis,type = 1):
   userID = message.from_user.id
   if (hasattr(message,"chat")):
@@ -33,12 +37,7 @@ def st(client, message,redis,type = 1):
   #print("vvvvvvvvvvvvvvv",chatID)
   rank = isrank(redis,userID,chatID)
   
-  if redis.sismember("{}Nbot:lang:ar".format(BOT_ID),chatID):
-    lang = "ar"
-  elif redis.sismember("{}Nbot:lang:en".format(BOT_ID),chatID):
-    lang = "en"
-  else :
-    lang = "ar"
+  lang = Glang(redis,chatID)
   moduleCMD = "lang."+lang+"-cmd"
   moduleREPLY = "lang."+lang+"-reply"
   c = importlib.import_module(moduleCMD)
@@ -277,3 +276,172 @@ def Clang(client, message,redis,r):
       names.append(name)
       i +=1
   return InlineKeyboardMarkup(array)
+
+
+
+
+
+
+def st_res(client, message,redis,type = 1):
+  userID = message.from_user.id
+  if (hasattr(message,"chat")):
+    chatID = message.chat.id
+  else:
+    chatID = message.message.chat.id
+  #print("vvvvvvvvvvvvvvv",chatID)
+  rank = isrank(redis,userID,chatID)
+  
+  lang = Glang(redis,chatID)
+  moduleCMD = "lang."+lang+"-cmd"
+  moduleREPLY = "lang."+lang+"-reply"
+  c = importlib.import_module(moduleCMD)
+  r = importlib.import_module(moduleREPLY)
+  if redis.sismember("{}Nbot:Llink:res".format(BOT_ID),chatID):
+    link = c.STlink+" "+r.false2
+  else:
+    link = c.STlink+" "+r.true2
+
+  if redis.sismember("{}Nbot:Lusername:res".format(BOT_ID),chatID):#2
+    username = c.STusername+" "+r.false2
+  else:
+    username = c.STusername+" "+r.true2
+
+  if redis.sismember("{}Nbot:Ltag:res".format(BOT_ID),chatID):#3
+    tag = c.STtag+" "+r.false2
+  else:
+    tag = c.STtag+" "+r.true2
+
+  if redis.sismember("{}Nbot:Lenglish:res".format(BOT_ID),chatID):#4
+    english = c.STenglish+" "+r.false2
+  else:
+    english = c.STenglish+" "+r.true2
+
+  if redis.sismember("{}Nbot:Larabic:res".format(BOT_ID),chatID):#5
+    arabic = c.STarabic+" "+r.false2
+  else:
+    arabic = c.STarabic+" "+r.true2
+
+  if redis.sismember("{}Nbot:Lmarkdown:res".format(BOT_ID),chatID):#6
+    markdown = c.STmarkdown+" "+r.false2
+  else:
+    markdown = c.STmarkdown+" "+r.true2
+
+  if redis.sismember("{}Nbot:Linline:res".format(BOT_ID),chatID):#7
+    inline = c.STinline+" "+r.false2
+  else:
+    inline = c.STinline+" "+r.true2
+
+  if redis.sismember("{}Nbot:Lsticker:res".format(BOT_ID),chatID):#8
+    sticker = c.STsticker+" "+r.false2
+  else:
+    sticker = c.STsticker+" "+r.true2
+
+  if redis.sismember("{}Nbot:Lgifs:res".format(BOT_ID),chatID):#9
+    gifs = c.STgifs+" "+r.false2
+  else:
+    gifs = c.STgifs+" "+r.true2
+
+  if redis.sismember("{}Nbot:Lvideo:res".format(BOT_ID),chatID):#10
+    video = c.STvideo+" "+r.false2
+  else:
+    video = c.STvideo+" "+r.true2
+
+  if redis.sismember("{}Nbot:Lvoice:res".format(BOT_ID),chatID):#11
+    voice = c.STvoice+" "+r.false2
+  else:
+    voice = c.STvoice+" "+r.true2
+
+  if redis.sismember("{}Nbot:Lmusic:res".format(BOT_ID),chatID):#12
+    music = c.STmusic+" "+r.false2
+  else:
+    music = c.STmusic+" "+r.true2
+
+  if redis.sismember("{}Nbot:Lfiles:res".format(BOT_ID),chatID):#13
+    files = c.STfiles+" "+r.false2
+  else:
+    files = c.STfiles+" "+r.true2
+
+  if redis.sismember("{}Nbot:Lphoto:res".format(BOT_ID),chatID):#14
+    photo = c.STphoto+" "+r.false2
+  else:
+    photo = c.STphoto+" "+r.true2
+
+  if redis.sismember("{}Nbot:Lcontact:res".format(BOT_ID),chatID):#15
+    contact = c.STcontact+" "+r.false2
+  else:
+    contact = c.STcontact+" "+r.true2
+
+  if redis.sismember("{}Nbot:Lbots:res".format(BOT_ID),chatID):#16
+    bots = c.STbots+" "+r.false2
+  else:
+    bots = c.STbots+" "+r.true2
+
+  if redis.sismember("{}Nbot:Lfwd:res".format(BOT_ID),chatID):#18
+    fwd = c.STfwd+" "+r.false2
+  else:
+    fwd = c.STfwd+" "+r.true2
+
+  if redis.sismember("{}Nbot:Lnote:res".format(BOT_ID),chatID):#19
+    note = c.STnote+" "+r.false2
+  else:
+    note = c.STnote+" "+r.true2
+  if redis.sismember("{}Nbot:Ledits:res".format(BOT_ID),chatID):#19
+    edits = c.STedits+" "+r.false2
+  else:
+    edits = c.STedits+" "+r.true2
+  if redis.sismember("{}Nbot:Llongtext:res".format(BOT_ID),chatID):#19
+    longtext = c.STlongtext+" "+r.false2
+  else:
+    longtext = c.STlongtext+" "+r.true2
+
+  if type == 1:
+    reply_markup=InlineKeyboardMarkup([
+        [
+          InlineKeyboardButton(link,callback_data=json.dumps(["LU-res","Llink-res",userID,1])),
+          InlineKeyboardButton(bots,callback_data=json.dumps(["LU-res","Lbots-res",userID,1])),
+          ],[
+            InlineKeyboardButton(video,callback_data=json.dumps(["LU-res","Lvideo-res",userID,1])),
+            InlineKeyboardButton(note,callback_data=json.dumps(["LU-res","Lnote-res",userID,1])),
+            ],[
+              InlineKeyboardButton(music,callback_data=json.dumps(["LU-res","Lmusic-res",userID,1])),
+              InlineKeyboardButton(voice,callback_data=json.dumps(["LU-res","Lvoice-res",userID,1]))
+              ],[
+                InlineKeyboardButton(gifs,callback_data=json.dumps(["LU-res","Lgifs-res",userID,1])),
+                InlineKeyboardButton(photo,callback_data=json.dumps(["LU-res","Lphoto-res",userID,1])),
+                ],[
+                  InlineKeyboardButton(">>",callback_data=json.dumps(["listCH-res",2,userID])),
+                  ]
+                  ])
+
+  if type == 2:
+    reply_markup=InlineKeyboardMarkup([
+        [
+          InlineKeyboardButton(inline,callback_data=json.dumps(["LU-res","Linline-res",userID,2])),
+          InlineKeyboardButton(markdown,callback_data=json.dumps(["LU-res","Lmarkdown-res",userID,2])),
+          ],[
+            InlineKeyboardButton(files,callback_data=json.dumps(["LU-res","Lfiles-res",userID,2])),
+            InlineKeyboardButton(contact,callback_data=json.dumps(["LU-res","Lcontact-res",userID,2])),
+            ],[
+              InlineKeyboardButton(sticker,callback_data=json.dumps(["LU-res","Lsticker-res",userID,2])),
+              InlineKeyboardButton(fwd,callback_data=json.dumps(["LU-res","Lfwd-res",userID,2])),
+              ],[
+                InlineKeyboardButton(username,callback_data=json.dumps(["LU-res","Lusername-res",userID,2])),
+                InlineKeyboardButton(english,callback_data=json.dumps(["LU-res","Lenglish-res",userID,2])),
+                ],[
+                  InlineKeyboardButton("<<",callback_data=json.dumps(["listCH-res",1,userID])),
+                  InlineKeyboardButton(">>",callback_data=json.dumps(["listCH-res",3,userID])),
+                  ]
+                  ])
+
+  if type == 3:
+
+    reply_markup=InlineKeyboardMarkup([
+        [
+                       InlineKeyboardButton(arabic,callback_data=json.dumps(["LU-res","Larabic-res",userID,3])),
+                    InlineKeyboardButton(tag,callback_data=json.dumps(["LU-res","Ltag-res",userID,3])),
+          ],[
+                    InlineKeyboardButton(longtext,callback_data=json.dumps(["LU-res","Llongtext-res",userID,3])),
+              ],[InlineKeyboardButton("<<",callback_data=json.dumps(["listCH-res",2,userID])),]
+                  ])
+
+  return reply_markup
