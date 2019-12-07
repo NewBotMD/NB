@@ -78,6 +78,10 @@ def updateCallback(client, callback_query,redis):
     redis.delete("{}Nbot:{}:floodClick".format(BOT_ID,userID))
 
   if group is True and int(date[2]) == userID and not redis.get("{}Nbot:floodUsers:{}".format(BOT_ID,userID)):
+    if date[0] == "delmsgclick":
+      Bot("deleteMessage",{"chat_id":chatID,"message_id":message_id})
+      Bot("deleteMessage",{"chat_id":chatID,"message_id":callback_query.message.reply_to_message.message_id})
+
     if date[0] == "ckGPs":
       rank = isrank(redis,userID,chatID)
       if rank == "sudo":
@@ -535,6 +539,7 @@ def updateCallback(client, callback_query,redis):
         redis.delete("{}Nbot:{}:{}".format(BOT_ID,chatID,H))
         Bot("editMessageText",{"chat_id":chatID,"text":r.DoneDelList,"message_id":message_id,"disable_web_page_preview":True})
     redis.setex("{}Nbot:{}:floodClick".format(BOT_ID,userID), 3, User_click+1)
+    Bot("answerCallbackQuery",{"callback_query_id":callback_query.id})
   elif int(date[2]) != userID:
     Bot("answerCallbackQuery",{"callback_query_id":callback_query.id,"text":r.notforyou,"show_alert":True})
     redis.setex("{}Nbot:{}:floodClick".format(BOT_ID,userID), 3, User_click+1)
