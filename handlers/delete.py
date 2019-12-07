@@ -41,29 +41,44 @@ def delete(client, message,redis):
     if re.findall("[Hh][Tt][Tt][Pp][Ss]:/|[Hh][Tt][Tt][Pp]://|.[Ii][Rr]|.[Cc][Oo][Mm]|.[Oo][Rr][Gg]|.[Ii][Nn][Ff][Oo]|[Ww][Ww][Ww]|.[Tt][Kk]|.[Mm][Ee]", text):
       if redis.sismember("{}Nbot:Llink".format(BOT_ID),chatID): #1
         Bot("deleteMessage",{"chat_id":chatID,"message_id":message.message_id})
+        if redis.sismember("{}Nbot:Llink:res".format(BOT_ID),chatID):
+          Bot("restrictChatMember",{"chat_id": chatID,"user_id": userID,"can_send_messages": 0,"can_send_media_messages": 0,"can_send_other_messages": 0,"can_send_polls": 0,"can_change_info": 0,"can_add_web_page_previews": 0,"can_pin_messages": 0,})
+
 
     if re.findall('@', text):
       if redis.sismember("{}Nbot:Lusername".format(BOT_ID),chatID):#2
         Bot("deleteMessage",{"chat_id":chatID,"message_id":message.message_id})
+        if redis.sismember("{}Nbot:Lusername:res".format(BOT_ID),chatID):
+          Bot("restrictChatMember",{"chat_id": chatID,"user_id": userID,"can_send_messages": 0,"can_send_media_messages": 0,"can_send_other_messages": 0,"can_send_polls": 0,"can_change_info": 0,"can_add_web_page_previews": 0,"can_pin_messages": 0,})
+
 
     if re.findall('#', text):
       if redis.sismember("{}Nbot:Ltag".format(BOT_ID),chatID):#3
         Bot("deleteMessage",{"chat_id":chatID,"message_id":message.message_id})
+        if redis.sismember("{}Nbot:Ltag:res".format(BOT_ID),chatID):
+          Bot("restrictChatMember",{"chat_id": chatID,"user_id": userID,"can_send_messages": 0,"can_send_media_messages": 0,"can_send_other_messages": 0,"can_send_polls": 0,"can_change_info": 0,"can_add_web_page_previews": 0,"can_pin_messages": 0,})
 
     if re.findall("[a-zA-Z0-9$@$!%*?&#^-_. +]+", text):
       if redis.sismember("{}Nbot:Lenglish".format(BOT_ID),chatID):#4
         Bot("deleteMessage",{"chat_id":chatID,"message_id":message.message_id})
-  
+        if redis.sismember("{}Nbot:Lenglish:res".format(BOT_ID),chatID):
+          Bot("restrictChatMember",{"chat_id": chatID,"user_id": userID,"can_send_messages": 0,"can_send_media_messages": 0,"can_send_other_messages": 0,"can_send_polls": 0,"can_change_info": 0,"can_add_web_page_previews": 0,"can_pin_messages": 0,})
+
     if re.findall("[ا-ي٠-٩]", text):
       if redis.sismember("{}Nbot:Larabic".format(BOT_ID),chatID):#5
         Bot("deleteMessage",{"chat_id":chatID,"message_id":message.message_id})
-    if re.findall('@', text):
-      if redis.sismember("{}Nbot:Lusername".format(BOT_ID),chatID):#2
-        Bot("deleteMessage",{"chat_id":chatID,"message_id":message.message_id})
+        if redis.sismember("{}Nbot:Larabic:res".format(BOT_ID),chatID):
+          Bot("restrictChatMember",{"chat_id": chatID,"user_id": userID,"can_send_messages": 0,"can_send_media_messages": 0,"can_send_other_messages": 0,"can_send_polls": 0,"can_change_info": 0,"can_add_web_page_previews": 0,"can_pin_messages": 0,})
+
+
     Nlongtext = (redis.get("{}Nbot:Nlongtext".format(BOT_ID)) or 250)
     if len(text) >= Nlongtext:
       if redis.sismember("{}Nbot:Llongtext".format(BOT_ID),chatID):#2
         Bot("deleteMessage",{"chat_id":chatID,"message_id":message.message_id})
+        if redis.sismember("{}Nbot:Llongtext:res".format(BOT_ID),chatID):
+          Bot("restrictChatMember",{"chat_id": chatID,"user_id": userID,"can_send_messages": 0,"can_send_media_messages": 0,"can_send_other_messages": 0,"can_send_polls": 0,"can_change_info": 0,"can_add_web_page_previews": 0,"can_pin_messages": 0,})
+
+        
     li = redis.smembers("{}Nbot:{}:blockTEXTs".format(BOT_ID,chatID))
     for word in li:
       if re.findall(word, text):
@@ -78,53 +93,79 @@ def delete(client, message,redis):
       for entitie in message.entities:
         if entitie.type is "text_link":
           Bot("deleteMessage",{"chat_id":chatID,"message_id":message.message_id})
+          if redis.sismember("{}Nbot:Lmarkdown:res".format(BOT_ID),chatID):
+            Bot("restrictChatMember",{"chat_id": chatID,"user_id": userID,"can_send_messages": 0,"can_send_media_messages": 0,"can_send_other_messages": 0,"can_send_polls": 0,"can_change_info": 0,"can_add_web_page_previews": 0,"can_pin_messages": 0,})
+
           break
 
   if message.via_bot:
     if redis.sismember("{}Nbot:Linline".format(BOT_ID),chatID):#7
       Bot("deleteMessage",{"chat_id":chatID,"message_id":message.message_id})
+      if redis.sismember("{}Nbot:Linline:res".format(BOT_ID),chatID):
+        Bot("restrictChatMember",{"chat_id": chatID,"user_id": userID,"can_send_messages": 0,"can_send_media_messages": 0,"can_send_other_messages": 0,"can_send_polls": 0,"can_change_info": 0,"can_add_web_page_previews": 0,"can_pin_messages": 0,})
 
   if message.reply_markup:
     if redis.sismember("{}Nbot:Linline".format(BOT_ID),chatID):
       Bot("deleteMessage",{"chat_id":chatID,"message_id":message.message_id})
+      if redis.sismember("{}Nbot:Linline:res".format(BOT_ID),chatID):
+        Bot("restrictChatMember",{"chat_id": chatID,"user_id": userID,"can_send_messages": 0,"can_send_media_messages": 0,"can_send_other_messages": 0,"can_send_polls": 0,"can_change_info": 0,"can_add_web_page_previews": 0,"can_pin_messages": 0,})
 
   if message.sticker:
     if redis.sismember("{}Nbot:Lsticker".format(BOT_ID),chatID):#8
       Bot("deleteMessage",{"chat_id":chatID,"message_id":message.message_id})
+      if redis.sismember("{}Nbot:Lsticker:res".format(BOT_ID),chatID):
+        Bot("restrictChatMember",{"chat_id": chatID,"user_id": userID,"can_send_messages": 0,"can_send_media_messages": 0,"can_send_other_messages": 0,"can_send_polls": 0,"can_change_info": 0,"can_add_web_page_previews": 0,"can_pin_messages": 0,})
+
     elif redis.sismember("{}Nbot:{}:blockSTICKERs".format(BOT_ID,chatID),message.sticker.file_id):
       Bot("deleteMessage",{"chat_id":chatID,"message_id":message.message_id})
 
   if message.animation:
     if redis.sismember("{}Nbot:Lgifs".format(BOT_ID),chatID):#9
       Bot("deleteMessage",{"chat_id":chatID,"message_id":message.message_id})
+      if redis.sismember("{}Nbot:Lgifs:res".format(BOT_ID),chatID):
+        Bot("restrictChatMember",{"chat_id": chatID,"user_id": userID,"can_send_messages": 0,"can_send_media_messages": 0,"can_send_other_messages": 0,"can_send_polls": 0,"can_change_info": 0,"can_add_web_page_previews": 0,"can_pin_messages": 0,})
+
     elif redis.sismember("{}Nbot:{}:blockanimations".format(BOT_ID,chatID),message.animation.file_id):
       Bot("deleteMessage",{"chat_id":chatID,"message_id":message.message_id})
 
   if message.audio:
     if redis.sismember("{}Nbot:Lmusic".format(BOT_ID),chatID):#10
       Bot("deleteMessage",{"chat_id":chatID,"message_id":message.message_id})
+      if redis.sismember("{}Nbot:Lmusic:res".format(BOT_ID),chatID):
+        Bot("restrictChatMember",{"chat_id": chatID,"user_id": userID,"can_send_messages": 0,"can_send_media_messages": 0,"can_send_other_messages": 0,"can_send_polls": 0,"can_change_info": 0,"can_add_web_page_previews": 0,"can_pin_messages": 0,})
 
   if message.voice:
     if redis.sismember("{}Nbot:Lvoice".format(BOT_ID),chatID):#11
       Bot("deleteMessage",{"chat_id":chatID,"message_id":message.message_id})
+      if redis.sismember("{}Nbot:Lvoice:res".format(BOT_ID),chatID):
+        Bot("restrictChatMember",{"chat_id": chatID,"user_id": userID,"can_send_messages": 0,"can_send_media_messages": 0,"can_send_other_messages": 0,"can_send_polls": 0,"can_change_info": 0,"can_add_web_page_previews": 0,"can_pin_messages": 0,})
 
   if message.video:
     if redis.sismember("{}Nbot:Lvideo".format(BOT_ID),chatID):#12
       Bot("deleteMessage",{"chat_id":chatID,"message_id":message.message_id})
+      if redis.sismember("{}Nbot:Lvideo:res".format(BOT_ID),chatID):
+        Bot("restrictChatMember",{"chat_id": chatID,"user_id": userID,"can_send_messages": 0,"can_send_media_messages": 0,"can_send_other_messages": 0,"can_send_polls": 0,"can_change_info": 0,"can_add_web_page_previews": 0,"can_pin_messages": 0,})
 
   if message.video:
     if redis.sismember("{}Nbot:Lfiles".format(BOT_ID),chatID):#13
       Bot("deleteMessage",{"chat_id":chatID,"message_id":message.message_id})
+      if redis.sismember("{}Nbot:Lfiles:res".format(BOT_ID),chatID):
+        Bot("restrictChatMember",{"chat_id": chatID,"user_id": userID,"can_send_messages": 0,"can_send_media_messages": 0,"can_send_other_messages": 0,"can_send_polls": 0,"can_change_info": 0,"can_add_web_page_previews": 0,"can_pin_messages": 0,})
 
   if message.photo:
     if redis.sismember("{}Nbot:Lphoto".format(BOT_ID),chatID):#14
       Bot("deleteMessage",{"chat_id":chatID,"message_id":message.message_id})
+      if redis.sismember("{}Nbot:Lphoto:res".format(BOT_ID),chatID):
+        Bot("restrictChatMember",{"chat_id": chatID,"user_id": userID,"can_send_messages": 0,"can_send_media_messages": 0,"can_send_other_messages": 0,"can_send_polls": 0,"can_change_info": 0,"can_add_web_page_previews": 0,"can_pin_messages": 0,})
+
     elif redis.sismember("{}Nbot:{}:blockphotos".format(BOT_ID,chatID),message.photo.file_id):
       Bot("deleteMessage",{"chat_id":chatID,"message_id":message.message_id})
 
   if message.contact:
     if redis.sismember("{}Nbot:Lcontact".format(BOT_ID),chatID):#15
       Bot("deleteMessage",{"chat_id":chatID,"message_id":message.message_id})
+      if redis.sismember("{}Nbot:Lcontact:res".format(BOT_ID),chatID):
+        Bot("restrictChatMember",{"chat_id": chatID,"user_id": userID,"can_send_messages": 0,"can_send_media_messages": 0,"can_send_other_messages": 0,"can_send_polls": 0,"can_change_info": 0,"can_add_web_page_previews": 0,"can_pin_messages": 0,})
 
   if message.new_chat_members:
     if message.new_chat_members[0].is_bot:
@@ -139,10 +180,15 @@ def delete(client, message,redis):
   if message.forward_from:
     if redis.sismember("{}Nbot:Lfwd".format(BOT_ID),chatID):#18
       Bot("deleteMessage",{"chat_id":chatID,"message_id":message.message_id})
+      if redis.sismember("{}Nbot:Lfwd:res".format(BOT_ID),chatID):
+        Bot("restrictChatMember",{"chat_id": chatID,"user_id": userID,"can_send_messages": 0,"can_send_media_messages": 0,"can_send_other_messages": 0,"can_send_polls": 0,"can_change_info": 0,"can_add_web_page_previews": 0,"can_pin_messages": 0,})
 
   if message.video_note:
     if redis.sismember("{}Nbot:Lnote".format(BOT_ID),chatID):#19
       Bot("deleteMessage",{"chat_id":chatID,"message_id":message.message_id})
+      if redis.sismember("{}Nbot:Lnote:res".format(BOT_ID),chatID):
+        Bot("restrictChatMember",{"chat_id": chatID,"user_id": userID,"can_send_messages": 0,"can_send_media_messages": 0,"can_send_other_messages": 0,"can_send_polls": 0,"can_change_info": 0,"can_add_web_page_previews": 0,"can_pin_messages": 0,})
+
 
   if redis.sismember("{}Nbot:Lflood".format(BOT_ID),chatID) :#20
     Max_msg = int((redis.hget("{}Nbot:max_msg".format(BOT_ID),chatID) or 10))
