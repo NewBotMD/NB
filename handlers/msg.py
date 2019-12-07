@@ -121,7 +121,13 @@ def updateHandlers(client, message,redis):
 			t.setDaemon(True)
 			t.start()
 		if text and re.search("^/start$",text):
+			userID = message.from_user.id
+			userFN = message.from_user.first_name
 			redis.sadd("{}Nbot:privates".format(BOT_ID),userID)
+			getbot = client.get_me()
+			kb = InlineKeyboardMarkup([[InlineKeyboardButton("NewBot", url="t.me/nbbot")]])
+			Bot("sendMessage",{"chat_id":chatID,"text":r.botstart.format(getbot.first_name,getbot.username),"reply_to_message_id":message.message_id,"parse_mode":"html","reply_markup":kb})
+		
 			print("start")
 		if text and re.search("^/start (.*)$",text):
 			tx = text.replace("/start ","")
