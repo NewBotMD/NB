@@ -1,6 +1,6 @@
 from utlis.rank import setrank,isrank,remrank,remsudos,setsudo,GPranks,IDrank
 from utlis.send import send_msg, BYusers, Sendto, fwdto,Name,Glang
-from utlis.locks import st,getOR,Clang
+from utlis.locks import st,getOR,Clang,st_res
 from utlis.tg import Bot
 from config import *
 
@@ -412,8 +412,25 @@ def updateCallback(client, callback_query,redis):
         T = (redis.hget("{}Nbot:time_ck".format(BOT_ID),chatID) or 3)
         m = (redis.hget("{}Nbot:max_msg".format(BOT_ID),chatID) or 10)
         Bot("editMessageText",{"chat_id":chatID,"text":r.st2.format(title,T,m),"message_id":message_id,"disable_web_page_preview":True,"reply_markup":st(client, callback_query,redis,int(date[1])),"parse_mode":"html"})
+    if date[0] == "listCH-res":
+      Bot("editMessageReplyMarkup",{"chat_id":chatID,"message_id":message_id,"reply_markup":st_res(client, callback_query,redis,int(date[1]))})
+
 
       #Bot("editMessageReplyMarkup",{"chat_id":chatID,"message_id":message_id,"reply_markup":st(client, callback_query,redis,int(date[1]))})
+    if date[0] == 'LU-res':
+      d = date[1].split("-")
+      lock = d[0]
+      lockres = d[0]+":"+d[1]
+      if redis.sismember("{}Nbot:{}".format(BOT_ID,lockres),chatID):
+        redis.srem("{}Nbot:{}".format(BOT_ID,lockres),chatID)
+      else:
+        redis.sadd("{}Nbot:{}".format(BOT_ID,lockres),chatID)
+        redis.sadd("{}Nbot:{}".format(BOT_ID,lock),chatID)
+      Bot("editMessageReplyMarkup",{"chat_id":chatID,"message_id":message_id,"reply_markup":st_res(client, callback_query,redis,int(date[3]))})
+
+
+    
+    
     if date[0] == 'LU':
       if redis.sismember("{}Nbot:{}".format(BOT_ID,date[1]),chatID):
         save = redis.srem("{}Nbot:{}".format(BOT_ID,date[1]),chatID)
