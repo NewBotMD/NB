@@ -55,6 +55,9 @@ def gpcmd(client, message,redis):
 
 ###############
   if text:
+    if text == c.delrpmsg and message.reply_to_message:
+      Bot("deleteMessage",{"chat_id":chatID,"message_id":message.message_id})
+      Bot("deleteMessage",{"chat_id":chatID,"message_id":message.reply_to_message.message_id})
 
     if text == c.settingsCmd and Ckuser(message):
       kb = st(client, message,redis)
@@ -217,7 +220,7 @@ def gpcmd(client, message,redis):
           msgs = (redis.hget("{}Nbot:{}:msgs".format(BOT_ID,chatID),userID) or 0)
           edits = (redis.hget("{}Nbot:{}:edits".format(BOT_ID,chatID),userID) or 0)
           rate = int(msgs)*100/20000
-          v = Bot("sendMessage",{"chat_id":chatID,"text":tx.format(us=("@"+username or "None"),id=userID,rank=t,msgs=msgs,edits=edits,rate=str(rate)+"%"),"reply_to_message_id":message.message_id,"parse_mode":"html"})
+          v = Bot("sendMessage",{"chat_id":chatID,"text":tx.format(us=("@"+username or "None"),id=userID,rk=t,msgs=msgs,edits=edits,rate=str(rate)+"%"),"reply_to_message_id":message.message_id,"parse_mode":"html"})
           if v["ok"]:
             redis.hset("{}Nbot:SHOWid".format(BOT_ID),chatID,tx)
             Bot("sendMessage",{"chat_id":chatID,"text":r.DsetIDShow,"reply_to_message_id":message.message_id,"parse_mode":"html"})
