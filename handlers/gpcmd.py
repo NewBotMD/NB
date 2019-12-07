@@ -1,7 +1,7 @@
 from utlis.rank import setrank,isrank,remrank,remsudos,setsudo, GPranks,Grank,IDrank
 from utlis.tg import Bot , Ckuser
 from utlis.send import send_msg, BYusers, Name,Glang
-from utlis.locks import st,Clang
+from utlis.locks import st,Clang,st_res
 from config import *
 
 from pyrogram import ReplyKeyboardMarkup, InlineKeyboardMarkup, InlineKeyboardButton
@@ -59,6 +59,12 @@ def gpcmd(client, message,redis):
     if text == c.settingsCmd and Ckuser(message):
       kb = st(client, message,redis)
       Bot("sendMessage",{"chat_id":chatID,"text":r.settings.format(title),"reply_to_message_id":message.message_id,"parse_mode":"html","reply_markup":kb})
+
+
+    if re.search(c.settingsCmdRes, text) and Ckuser(message):
+      kb = st_res(client, message,redis)
+      Bot("sendMessage",{"chat_id":chatID,"text":r.settingsRes.format(title),"reply_to_message_id":message.message_id,"parse_mode":"html","reply_markup":kb})
+    
     
     if re.search(c.bans, text):
       arrays = redis.smembers("{}Nbot:{}:bans".format(BOT_ID,chatID))
