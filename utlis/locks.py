@@ -194,7 +194,8 @@ def st(client, message,redis,type = 1):
                 InlineKeyboardButton(gifs,callback_data=json.dumps(["LU","Lgifs",userID,1])),
                 InlineKeyboardButton(photo,callback_data=json.dumps(["LU","Lphoto",userID,1])),
                 ],[
-                  InlineKeyboardButton(">>",callback_data=json.dumps(["listCH",2,userID])),
+                  InlineKeyboardButton(r.hide,callback_data=json.dumps(["delmsgclick","",userID])),
+                  InlineKeyboardButton(r.fr,callback_data=json.dumps(["listCH",2,userID])),
                   ]
                   ])
 
@@ -213,17 +214,20 @@ def st(client, message,redis,type = 1):
                 InlineKeyboardButton(username,callback_data=json.dumps(["LU","Lusername",userID,2])),
                 InlineKeyboardButton(english,callback_data=json.dumps(["LU","Lenglish",userID,2])),
                 ],[
-                  InlineKeyboardButton("<<",callback_data=json.dumps(["listCH",1,userID])),
-                  InlineKeyboardButton(">>",callback_data=json.dumps(["listCH",3,userID])),
+                  InlineKeyboardButton(r.pk,callback_data=json.dumps(["listCH",1,userID])),
+                  InlineKeyboardButton(r.hide,callback_data=json.dumps(["delmsgclick","",userID])),
+                  InlineKeyboardButton(r.fr,callback_data=json.dumps(["listCH",3,userID])),
                   ]
                   ])
 
   if type == 3:
     print(rank)
     if rank != "admin":
-      t = [InlineKeyboardButton("<<",callback_data=json.dumps(["listCH",2,userID])),InlineKeyboardButton(">>",callback_data=json.dumps(["listCH",4,userID]))]
+      t = [InlineKeyboardButton(r.pk,callback_data=json.dumps(["listCH",2,userID])),
+      InlineKeyboardButton(r.hide,callback_data=json.dumps(["delmsgclick","",userID])),
+      InlineKeyboardButton(r.fr,callback_data=json.dumps(["listCH",4,userID]))]
     else:
-      t = [InlineKeyboardButton("<<",callback_data=json.dumps(["listCH",2,userID])),]
+      t = [InlineKeyboardButton(r.pk,callback_data=json.dumps(["listCH",2,userID])),]
     reply_markup=InlineKeyboardMarkup([
         [
                        InlineKeyboardButton(arabic,callback_data=json.dumps(["LU","Larabic",userID,3])),
@@ -249,7 +253,7 @@ def st(client, message,redis,type = 1):
               ],[
                     InlineKeyboardButton(IDSend,callback_data=json.dumps(["LU","IDSend",userID,4])),
               ],[
-                  InlineKeyboardButton("<<",callback_data=json.dumps(["listCH",3,userID])),
+                  InlineKeyboardButton(r.pk,callback_data=json.dumps(["listCH",3,userID])),InlineKeyboardButton(r.hide,callback_data=json.dumps(["delmsgclick","",userID])),
                   ]
                   ])
   return reply_markup
@@ -409,7 +413,8 @@ def st_res(client, message,redis,type = 1):
                 InlineKeyboardButton(gifs,callback_data=json.dumps(["LU-res","Lgifs-res",userID,1])),
                 InlineKeyboardButton(photo,callback_data=json.dumps(["LU-res","Lphoto-res",userID,1])),
                 ],[
-                  InlineKeyboardButton(">>",callback_data=json.dumps(["listCH-res",2,userID])),
+                  InlineKeyboardButton(r.hide,callback_data=json.dumps(["delmsgclick","",userID])),
+                  InlineKeyboardButton(r.fr,callback_data=json.dumps(["listCH-res",2,userID])),
                   ]
                   ])
 
@@ -428,8 +433,9 @@ def st_res(client, message,redis,type = 1):
                 InlineKeyboardButton(username,callback_data=json.dumps(["LU-res","Lusername-res",userID,2])),
                 InlineKeyboardButton(english,callback_data=json.dumps(["LU-res","Lenglish-res",userID,2])),
                 ],[
-                  InlineKeyboardButton("<<",callback_data=json.dumps(["listCH-res",1,userID])),
-                  InlineKeyboardButton(">>",callback_data=json.dumps(["listCH-res",3,userID])),
+                  InlineKeyboardButton(r.pk,callback_data=json.dumps(["listCH-res",1,userID])),
+                  InlineKeyboardButton(r.hide,callback_data=json.dumps(["delmsgclick","",userID])),
+                  InlineKeyboardButton(r.fr,callback_data=json.dumps(["listCH-res",3,userID])),
                   ]
                   ])
 
@@ -441,7 +447,7 @@ def st_res(client, message,redis,type = 1):
                     InlineKeyboardButton(tag,callback_data=json.dumps(["LU-res","Ltag-res",userID,3])),
           ],[
                     InlineKeyboardButton(longtext,callback_data=json.dumps(["LU-res","Llongtext-res",userID,3])),
-              ],[InlineKeyboardButton("<<",callback_data=json.dumps(["listCH-res",2,userID])),]
+              ],[InlineKeyboardButton(r.pk,callback_data=json.dumps(["listCH-res",2,userID])),InlineKeyboardButton(r.hide,callback_data=json.dumps(["delmsgclick","",userID])),]
                   ])
 
   return reply_markup
