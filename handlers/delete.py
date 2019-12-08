@@ -197,7 +197,17 @@ def delete(client, message,redis):
     if User_msg > Max_msg:
       GetGprank = GPranks(userID,chatID)
       if GetGprank == "member":
-        Bot("restrictChatMember",{"chat_id": chatID,"user_id": userID,"can_send_messages": 0,"can_send_media_messages": 0,"can_send_other_messages": 0,"can_send_polls": 0,"can_change_info": 0,"can_add_web_page_previews": 0,"can_pin_messages": 0,})
+
+        if redis.hexists("{}Nbot:floodset".format(BOT_ID),chatID):
+          get = redis.hget("{}Nbot:floodset".format(BOT_ID),chatID)
+        else:
+          get = "res"
+        if get == "res":
+          Bot("restrictChatMember",{"chat_id": chatID,"user_id": userID,"can_send_messages": 0,"can_send_media_messages": 0,"can_send_other_messages": 0,"can_send_polls": 0,"can_change_info": 0,"can_add_web_page_previews": 0,"can_pin_messages": 0,})
+        if get == "ban":
+          Bot("kickChatMember",{"chat_id":chatID,"user_id":userID})
+
+        
         redis.sadd("{}Nbot:{}:restricteds".format(BOT_ID,chatID),userID)
         BY = "<a href=\"tg://user?id={}\">{}</a>".format(userID,Name(userFN))
         Bot("sendMessage",{"chat_id":chatID,"text":r.TKflood.format(BY,Max_msg,Time_ck),"parse_mode":"html"})
