@@ -78,6 +78,19 @@ def updateCallback(client, callback_query,redis):
     redis.delete("{}Nbot:{}:floodClick".format(BOT_ID,userID))
 
   if group is True and int(date[2]) == userID and not redis.get("{}Nbot:floodUsers:{}".format(BOT_ID,userID)):
+    if date[0] == "floodset":
+      get = date[1]
+      if get == "ban":
+        redis.hset("{}Nbot:floodset".format(BOT_ID),chatID,"res")
+        tx = r.Tres
+        g= "res"
+      if get == "res":
+        redis.hset("{}Nbot:floodset".format(BOT_ID),chatID,"ban")
+        g= "ban"
+        tx =  r.Tban
+      kb = InlineKeyboardMarkup([[InlineKeyboardButton(r.fset.format(tx),callback_data=json.dumps(["floodset",g,userID]))]])
+      Bot("editMessageReplyMarkup",{"chat_id":chatID,"message_id":message_id,"disable_web_page_preview":True,"reply_markup":kb})
+      
     if date[0] == "delmsgclick":
       Bot("deleteMessage",{"chat_id":chatID,"message_id":message_id})
       Bot("deleteMessage",{"chat_id":chatID,"message_id":callback_query.message.reply_to_message.message_id})
