@@ -209,7 +209,18 @@ def gpcmd(client, message,redis):
       except Exception as e:
         Bot("sendMessage",{"chat_id":chatID,"text":r.userNocc,"reply_to_message_id":message.message_id,"parse_mode":"html"})
     if rank != "admin":
-      #if re.search(c.delIDC, text):
+      if re.search(c.floodset, text):
+        if redis.hexists("{}Nbot:floodset".format(BOT_ID),chatID):
+          get = redis.hget("{}Nbot:floodset".format(BOT_ID),chatID)
+        else:
+          get = "res"
+        if get == "ban":
+          tx = r.Tban
+        if get == "res":
+          tx =  r.Tres
+        kb = InlineKeyboardMarkup([[InlineKeyboardButton(r.fset.format(tx),callback_data=json.dumps(["floodset",get,userID]))]])
+        Bot("sendMessage",{"chat_id":chatID,"text":r.Tfset,"reply_to_message_id":message.message_id,"parse_mode":"html","reply_markup":kb})
+
 
       if re.search(c.delIDC, text):
         redis.hdel("{}Nbot:SHOWid".format(BOT_ID),chatID)
