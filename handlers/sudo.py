@@ -170,6 +170,10 @@ def sudo(client, message,redis):
 				onlyfiles = [f for f in listdir("files") if isfile(join("files", f))]
 				filesR = redis.smembers("{}Nbot:botfiles".format(BOT_ID))
 				array = []
+				print(onlyfiles)
+				if not onlyfiles:
+					Bot("sendMessage",{"chat_id":chatID,"text":r.NOaddfiles2,"reply_to_message_id":message.message_id,"parse_mode":"html","disable_web_page_preview":True})
+					return False
 				for f in onlyfiles:
 					if f in filesR:
 						s = r.true
@@ -182,7 +186,6 @@ def sudo(client, message,redis):
 			if text == c.ADDfiles:
 				url = "https://raw.githubusercontent.com/NewBotMD/NB-files/master/files"
 				req = requests.get(url).text
-				print("cc","cc",req,"cc","cc")
 				if not re.search(".py",req):
 					Bot("sendMessage",{"chat_id":chatID,"text":r.NOaddfiles,"reply_to_message_id":message.message_id,"disable_web_page_preview":True,"parse_mode":"html"})
 					return False
