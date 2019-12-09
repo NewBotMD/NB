@@ -158,3 +158,17 @@ def allGP(client, message,redis):
       if redis.hexists("{}Nbot:{}:VOreplys".format(BOT_ID,chatID),text):
         ID = redis.hget("{}Nbot:{}:VOreplys".format(BOT_ID,chatID),text)
         Bot("sendvoice",{"chat_id":chatID,"voice":ID,"reply_to_message_id":message.message_id})
+ 
+  if redis.smembers("{}Nbot:botfiles".format(BOT_ID)):
+    onlyfiles = [f for f in listdir("files") if isfile(join("files", f))]
+    filesR = redis.smembers("{}Nbot:botfiles".format(BOT_ID))
+    for f in onlyfiles:
+      if f in filesR:
+        fi = f.replace(".py","")
+        UpMs= "files."+fi
+        try:
+          U = importlib.import_module(UpMs)
+          U.updateMsgs(client, message,redis)
+        except Exception as e:
+          pass
+
