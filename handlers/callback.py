@@ -8,6 +8,10 @@ from pyrogram import ReplyKeyboardMarkup, InlineKeyboardMarkup, InlineKeyboardBu
 import threading, requests, time, random, re, json,datetime
 import importlib
 
+
+from os import listdir
+from os.path import isfile, join
+
 def updateCallback(client, callback_query,redis):
   
   userID = callback_query.from_user.id
@@ -78,8 +82,35 @@ def updateCallback(client, callback_query,redis):
     redis.delete("{}Nbot:{}:floodClick".format(BOT_ID,userID))
 
   if group is True and int(date[2]) == userID and not redis.get("{}Nbot:floodUsers:{}".format(BOT_ID,userID)):
+    if date[0] == "dlf":
+      File = date[1]
+      url = "https://raw.githubusercontent.com/NewBotMD/NB-files/master/"+File
+      out = requests.get(url).text
+      f = open("./files/"+File,"w+")
+      f.write(out)
+      f.close()
+      Bot("editMessageText",{"chat_id":chatID,"text":r.Dua.format(File),"message_id":message_id,"parse_mode":"html","disable_web_page_preview":True})
+
+    if date[0] == "au":
+      File = date[1]
+      if redis.sismember("{}Nbot:botfiles".format(BOT_ID),File):
+        redis.srem("{}Nbot:botfiles".format(BOT_ID),File)
+      else:
+        redis.sadd("{}Nbot:botfiles".format(BOT_ID),File)
+      onlyfiles = [f for f in listdir("files") if isfile(join("files", f))]
+      filesR = redis.smembers("{}Nbot:botfiles".format(BOT_ID))
+      array = []
+      for f in onlyfiles:
+        if f in filesR:
+          s = r.true
+        else:
+          s = r.false
+        array.append([InlineKeyboardButton(f+" "+s,callback_data=json.dumps(["au",f,userID]))])
+      kb = InlineKeyboardMarkup(array)
+      Bot("editMessageReplyMarkup",{"chat_id":chatID,"message_id":message_id,"disable_web_page_preview":True,"reply_markup":kb})
+
     if date[0] == "floodset":
-      get = date[1]
+      get = date[1] 
       if get == "ban":
         redis.hset("{}Nbot:floodset".format(BOT_ID),chatID,"res")
         tx = r.Tres
@@ -556,3 +587,17 @@ def updateCallback(client, callback_query,redis):
   elif int(date[2]) != userID:
     Bot("answerCallbackQuery",{"callback_query_id":callback_query.id,"text":r.notforyou,"show_alert":True})
     redis.setex("{}Nbot:{}:floodClick".format(BOT_ID,userID), 3, User_click+1)
+
+  if redis.smembers("{}Nbot:botfiles".format(BOT_ID)):
+    onlyfiles = [f for f in listdir("files") if isfile(join("files", f))]
+    filesR = redis.smembers("{}Nbot:botfiles".format(BOT_ID))
+    for f in onlyfiles:
+      if f in filesR:
+        fi = f.replace(".py","")
+        UpMs= "files."+fi
+        try:
+          U = importlib.import_module(UpMs)
+          U.updateCb(client, callback_query,redis)
+        except Exception as e:
+          pass
+
