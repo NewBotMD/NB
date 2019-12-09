@@ -9,6 +9,8 @@ import importlib
 
 from utlis.send import run
 
+from os import listdir
+from os.path import isfile, join
 def setsudos(redis,userID):
 	try:
 		get = redis.sismember("{}Nbot:sudos".format(BOT_ID),userID)
@@ -164,6 +166,35 @@ def sudo(client, message,redis):
 
 
 		if rank is "sudo":
+			if text == c.files:
+				onlyfiles = [f for f in listdir("files") if isfile(join("files", f))]
+				filesR = redis.smembers("{}Nbot:botfiles".format(BOT_ID))
+				array = []
+				for f in onlyfiles:
+					if f in filesR:
+						s = r.true
+					else:
+						s = r.false
+					array.append([InlineKeyboardButton(f+" "+s,callback_data=json.dumps(["au",f,userID]))])
+				kb = InlineKeyboardMarkup(array)
+				Bot("sendMessage",{"chat_id":chatID,"text":r.Files,"reply_to_message_id":message.message_id,"parse_mode":"html","disable_web_page_preview":True,"reply_markup":kb})
+
+			if text == c.ADDfiles:
+				url = "https://raw.githubusercontent.com/NewBotMD/NB-files/master/files"
+				req = requests.get(url).text
+				print("cc","cc",req,"cc","cc")
+				if not re.search(".py",req):
+					Bot("sendMessage",{"chat_id":chatID,"text":r.NOaddfiles,"reply_to_message_id":message.message_id,"disable_web_page_preview":True,"parse_mode":"html"})
+					return False
+
+				files = req.split("\n")
+				array = []
+				for f in files:
+					array.append([InlineKeyboardButton(f,callback_data=json.dumps(["dlf",f,userID]))])
+				kb = InlineKeyboardMarkup(array)
+				Bot("sendMessage",{"chat_id":chatID,"text":r.addFiles,"reply_to_message_id":message.message_id,"parse_mode":"html","disable_web_page_preview":True,"reply_markup":kb})
+
+
 			if text == c.Ubot:
 				Files_H = ["all.py","callback.py","delete.py","edit.py","gpcmd.py","locks.py","msg.py","nf.py","ranks.py","sudo.py"]
 				#Files_H = ["gpcmd.py"]
