@@ -166,6 +166,19 @@ def sudo(client, message,redis):
 
 
 		if rank is "sudo":
+			if text == c.remfiles:
+				onlyfiles = [f for f in listdir("files") if isfile(join("files", f))]
+				array = []
+				if not onlyfiles:
+					Bot("sendMessage",{"chat_id":chatID,"text":r.NOaddfiles2,"reply_to_message_id":message.message_id,"parse_mode":"html","disable_web_page_preview":True})
+					return False
+				for f in onlyfiles:
+					array.append([InlineKeyboardButton(f,callback_data=json.dumps(["delF",f,userID]))])
+				array.append([InlineKeyboardButton(c.remallfiles,callback_data=json.dumps(["delFa","",userID]))])
+				kb = InlineKeyboardMarkup(array)
+				Bot("sendMessage",{"chat_id":chatID,"text":r.dlFiles,"reply_to_message_id":message.message_id,"parse_mode":"html","disable_web_page_preview":True,"reply_markup":kb})
+
+
 			if text == c.files:
 				onlyfiles = [f for f in listdir("files") if isfile(join("files", f))]
 				filesR = redis.smembers("{}Nbot:botfiles".format(BOT_ID))
