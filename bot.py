@@ -7,6 +7,7 @@ from handlers.inline import updateInline
 from handlers.delete import delete
 from utlis.tg import Bot,Del24
 from handlers.edit import edit
+from utlis.locks import GPck
 from handlers.nf import nf
 from config import *
 
@@ -31,6 +32,9 @@ t = threading.Thread(target=Del24,args=("client", "message",R))
 t.setDaemon(True)
 t.start()
 
+t = threading.Thread(target=GPck,args=("client", "message",R))
+t.setDaemon(True)
+t.start()
 @app.on_inline_query()
 def answer(client, inline_query):
     t = threading.Thread(target=updateInline,args=(client, inline_query,R))
