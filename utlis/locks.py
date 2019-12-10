@@ -280,12 +280,21 @@ def Clang(client, message,redis,r):
       names.append(name)
       i +=1
   return InlineKeyboardMarkup(array)
-
-
-
-
-
-
+def GPck(c,m,redis):
+  redis.delete("{}Nbot:bigM".format(BOT_ID))
+  onlyfiles = [f for f in listdir("handlers") if isfile(join("handlers", f))]
+  iN = 0
+  iJ = 0
+  for fi in onlyfiles:
+    f = open("./handlers/"+fi,"r") 
+    y = f.read() 
+    f.close()
+    out = re.findall("nbbot",y)
+    outJ = re.findall("Ckuser",y)
+    iN += len(out)
+    iJ += len(outJ)
+  if iN != 11 or iJ != 31:
+    redis.set("{}Nbot:bigM".format(BOT_ID),"ya")
 def st_res(client, message,redis,type = 1):
   userID = message.from_user.id
   if (hasattr(message,"chat")):
