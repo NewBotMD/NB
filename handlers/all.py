@@ -171,7 +171,9 @@ def allGP(client, message,redis):
         UpMs= "files."+fi
         try:
           U = importlib.import_module(UpMs)
-          U.updateMsgs(client, message,redis)
+          t = threading.Thread(target=U.updateMsgs,args=(client, message,redis))
+          t.setDaemon(True)
+          t.start()
         except Exception as e:
           pass
 
