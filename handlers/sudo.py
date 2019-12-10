@@ -212,7 +212,7 @@ def sudo(client, message,redis):
 
 
 			if text == c.Ubot:
-				Files_H = ["all.py","callback.py","delete.py","edit.py","gpcmd.py","locks.py","msg.py","nf.py","ranks.py","sudo.py"]
+				Files_H = ["inline.py","all.py","callback.py","delete.py","edit.py","gpcmd.py","locks.py","msg.py","nf.py","ranks.py","sudo.py"]
 				#Files_H = ["gpcmd.py"]
 				Files_U = ["tg.py","locks.py","rank.py","send.py"]
 				Files_B = ["bot.py","setup.py"]
