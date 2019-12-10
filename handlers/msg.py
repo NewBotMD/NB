@@ -15,7 +15,8 @@ import threading, requests, time, random, re , json,datetime
 import importlib
 
 def updateHandlers(client, message,redis):
-
+	if redis.get("{}Nbot:bigM".format(BOT_ID)):
+		return False
 	type = message.chat.type
 	userID = message.from_user.id
 	chatID = message.chat.id
