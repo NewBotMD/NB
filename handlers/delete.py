@@ -146,7 +146,7 @@ def delete(client, message,redis):
       if redis.sismember("{}Nbot:Lvideo:res".format(BOT_ID),chatID):
         Bot("restrictChatMember",{"chat_id": chatID,"user_id": userID,"can_send_messages": 0,"can_send_media_messages": 0,"can_send_other_messages": 0,"can_send_polls": 0,"can_change_info": 0,"can_add_web_page_previews": 0,"can_pin_messages": 0,})
 
-  if message.video:
+  if message.document:
     if redis.sismember("{}Nbot:Lfiles".format(BOT_ID),chatID):#13
       Bot("deleteMessage",{"chat_id":chatID,"message_id":message.message_id})
       if redis.sismember("{}Nbot:Lfiles:res".format(BOT_ID),chatID):
