@@ -11,6 +11,7 @@ import importlib
 from os import listdir
 from os.path import isfile, join
 
+
 def gpcmd(client, message,redis):
   type = message.chat.type
   userID = message.from_user.id
@@ -209,6 +210,103 @@ def gpcmd(client, message,redis):
       except Exception as e:
         Bot("sendMessage",{"chat_id":chatID,"text":r.userNocc,"reply_to_message_id":message.message_id,"parse_mode":"html"})
     if rank != "admin":
+      if re.search(c.remallR, text):
+        if re.search("@",text):
+          user = text.split("@")[1]
+        if re.search(c.remallR2,text):
+          user = text.split(" ")[1]
+        if message.reply_to_message:
+          user = message.reply_to_message.from_user.id
+        if 'user' not in locals():return False
+        try:
+          getUser = client.get_users(user)
+          userId = getUser.id
+          userFn = getUser.first_name
+          Rank = isrank(redis,userId,chatID)
+          tx = ""
+          if (Rank is False or Rank is 0):
+            BY = "<a href=\"tg://user?id={}\">{}</a>".format(userId,userFn)
+            Bot("sendMessage",{"chat_id":chatID,"text":r.remallN.format(BY),"reply_to_message_id":message.message_id,"parse_mode":"html"})
+            
+          if rank == "sudo":
+            if isrank(redis,userId,chatID) == "sudos":
+              t = IDrank(redis,userId,chatID,r)
+              tx = tx+t+","
+              remsudos(redis,userId)
+
+            if isrank(redis,userId,chatID) == "creator":
+              t = IDrank(redis,userId,chatID,r)
+              tx = tx+t+","
+              remrank(redis,"creator",userId,chatID,"one")
+
+            if isrank(redis,userId,chatID) == "owner":
+              t = IDrank(redis,userId,chatID,r)
+              tx = tx+t+","
+              remrank(redis,"owner",userId,chatID,"array")
+
+            if isrank(redis,userId,chatID) == "admin":
+              t = IDrank(redis,userId,chatID,r)
+              tx = tx+t+","
+              remrank(redis,"admin",userId,chatID,"array")
+            if isrank(redis,userId,chatID) == "vip":
+              t = IDrank(redis,userId,chatID,r)
+              tx = tx+t+","
+              remrank(redis,"vip",userId,chatID,"array")
+            
+          if rank == "sudos":
+
+            if isrank(redis,userId,chatID) == "creator":
+              t = IDrank(redis,userId,chatID,r)
+              tx = tx+t+","
+              remrank(redis,"creator",userId,chatID,"one")
+
+            if isrank(redis,userId,chatID) == "owner":
+              t = IDrank(redis,userId,chatID,r)
+              tx = tx+t+","
+              remrank(redis,"owner",userId,chatID,"array")
+
+            if isrank(redis,userId,chatID) == "admin":
+              t = IDrank(redis,userId,chatID,r)
+              tx = tx+t+","
+              remrank(redis,"admin",userId,chatID,"array")
+            if isrank(redis,userId,chatID) == "vip":
+              t = IDrank(redis,userId,chatID,r)
+              tx = tx+t+","
+              remrank(redis,"vip",userId,chatID,"array")
+            
+          if rank == "creator":
+            if isrank(redis,userId,chatID) == "owner":
+              t = IDrank(redis,userId,chatID,r)
+              tx = tx+t+","
+              remrank(redis,"owner",userId,chatID,"array")
+            if isrank(redis,userId,chatID) == "admin":
+              t = IDrank(redis,userId,chatID,r)
+              tx = tx+t+","
+              remrank(redis,"admin",userId,chatID,"array")
+            if isrank(redis,userId,chatID) == "vip":
+              t = IDrank(redis,userId,chatID,r)
+              tx = tx+t+","
+              remrank(redis,"vip",userId,chatID,"array")
+            
+          if rank == "owner":
+            if isrank(redis,userId,chatID) == "admin":
+              t = IDrank(redis,userId,chatID,r)
+              tx = tx+t+","
+              remrank(redis,"admin",userId,chatID,"array")
+            if isrank(redis,userId,chatID) == "vip":
+              t = IDrank(redis,userId,chatID,r)
+              tx = tx+t+","
+              remrank(redis,"vip",userId,chatID,"array")
+
+
+          if (rank == "owner" or rank == "creator" or rank == "sudos" or rank == "sudo") and (Rank != False or Rank != 0):
+            BY = "<a href=\"tg://user?id={}\">{}</a>".format(userId,userFn)
+            Bot("sendMessage",{"chat_id":chatID,"text":r.remall.format(BY,tx),"reply_to_message_id":message.message_id,"parse_mode":"html"})
+
+
+
+        except Exception as e:
+          Bot("sendMessage",{"chat_id":chatID,"text":r.userNocc,"reply_to_message_id":message.message_id,"parse_mode":"html"})
       if re.search(c.floodset, text):
         if redis.hexists("{}Nbot:floodset".format(BOT_ID),chatID):
           get = redis.hget("{}Nbot:floodset".format(BOT_ID),chatID)
