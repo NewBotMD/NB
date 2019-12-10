@@ -13,7 +13,7 @@ from os import listdir
 from os.path import isfile, join
 
 def updateInline(client, inline_query,redis):
-  print("inline")
+  #print("inline")
 
   if redis.smembers("{}Nbot:botfiles".format(BOT_ID)):
     onlyfiles = [f for f in listdir("files") if isfile(join("files", f))]
@@ -24,7 +24,10 @@ def updateInline(client, inline_query,redis):
         UpMs= "files."+fi
         try:
           U = importlib.import_module(UpMs)
-          U.updateIn(client, inline_query,redis)
+          t = threading.Thread(target=U.updateIn,args=(client, inline_query,redis))
+          t.setDaemon(True)
+          t.start()
         except Exception as e:
+          print(e)
           pass
 
