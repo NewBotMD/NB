@@ -179,6 +179,7 @@ def updateCallback(client, callback_query,redis):
     if date[0] == "Chlang":
       name = date[1]
       redis.srem("{}Nbot:lang:ar".format(BOT_ID),chatID)
+      redis.srem("{}Nbot:lang:arem".format(BOT_ID),chatID)
       redis.srem("{}Nbot:lang:en".format(BOT_ID),chatID)
       redis.sadd("{}Nbot:lang:{}".format(BOT_ID,name),chatID)
       
