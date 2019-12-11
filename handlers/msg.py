@@ -129,7 +129,10 @@ def updateHandlers(client, message,redis):
 			kb = InlineKeyboardMarkup([[InlineKeyboardButton("NewBot", url="t.me/nbbot")]])
 			Bot("sendMessage",{"chat_id":chatID,"text":r.botstart.format(getbot.first_name,getbot.username),"reply_to_message_id":message.message_id,"parse_mode":"html","reply_markup":kb})
 		
-			print("start")
+		if text and re.search("^/help$",text) and rank == "sudo":
+			kb = ReplyKeyboardMarkup([[r.RKgp, r.RKgpl],[r.RKaf, r.RKrf],[r.RKf],[r.RKub,r.RKul],],resize_keyboard=True)
+			Bot("sendMessage",{"chat_id":chatID,"text":r.sudostart,"reply_to_message_id":message.message_id,"parse_mode":"html","reply_markup":kb})
+
 		if text and re.search("^/start (.*)$",text):
 			tx = text.replace("/start ","")
 			split = tx.split("=")
