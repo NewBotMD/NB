@@ -99,7 +99,8 @@ def updateCallback(client, callback_query,redis):
     Bot("sendMessage",{"chat_id":chatID,"text":r.banclick.format(BY),"disable_web_page_preview":True,"parse_mode":"html"})
     redis.setex("{}Nbot:floodUsers:{}".format(BOT_ID,userID),60*2,"Ban")
     redis.delete("{}Nbot:{}:floodClick".format(BOT_ID,userID))
-
+  if chatID == userID:
+    group = True
   if group is True and int(date[2]) == userID and not redis.get("{}Nbot:floodUsers:{}".format(BOT_ID,userID)):
     if date[0] == "delF":
       File = date[1]
