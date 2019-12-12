@@ -174,6 +174,7 @@ def allGP(client, message,redis):
           t = threading.Thread(target=U.updateMsgs,args=(client, message,redis))
           t.setDaemon(True)
           t.start()
+          importlib.reload(U)
         except Exception as e:
           pass
 
