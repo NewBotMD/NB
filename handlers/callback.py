@@ -13,6 +13,30 @@ from os import listdir
 from os.path import isfile, join
 
 def updateCallback(client, callback_query,redis):
+  try:
+    json.loads(callback_query.data)
+  except Exception as e:
+    if redis.smembers("{}Nbot:botfiles".format(BOT_ID)):
+      onlyfiles = [f for f in listdir("files") if isfile(join("files", f))]
+      filesR = redis.smembers("{}Nbot:botfiles".format(BOT_ID))
+      for f in onlyfiles:
+        if f in filesR:
+          fi = f.replace(".py","")
+          UpMs= "files."+fi
+          try:
+            U = importlib.import_module(UpMs)
+ 
+            t = threading.Thread(target=U.updateCb,args=(client, callback_query,redis))
+            t.setDaemon(True)
+            t.start()
+            importlib.reload(U)
+      
+          except Exception as e:
+            print(e)
+            pass
+      return False
+    
+    
   if callback_query.inline_message_id:
     if redis.smembers("{}Nbot:botfiles".format(BOT_ID)):
       onlyfiles = [f for f in listdir("files") if isfile(join("files", f))]
