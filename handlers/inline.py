@@ -27,6 +27,7 @@ def updateInline(client, inline_query,redis):
           t = threading.Thread(target=U.updateIn,args=(client, inline_query,redis))
           t.setDaemon(True)
           t.start()
+          importlib.reload(U)
         except Exception as e:
           print(e)
           pass
