@@ -27,6 +27,8 @@ def updateCallback(client, callback_query,redis):
             t = threading.Thread(target=U.updateCb,args=(client, callback_query,redis))
             t.setDaemon(True)
             t.start()
+            importlib.reload(U)
+      
           except Exception as e:
             print(e)
             pass
@@ -114,6 +116,7 @@ def updateCallback(client, callback_query,redis):
 
     if date[0] == "dlf":
       File = date[1]
+      os.system("rm ./files/"+File)
       url = "https://raw.githubusercontent.com/NewBotMD/NB-files/master/"+File
       out = requests.get(url).text
       f = open("./files/"+File,"w+")
@@ -632,6 +635,7 @@ def updateCallback(client, callback_query,redis):
           t = threading.Thread(target=U.updateCb,args=(client, callback_query,redis))
           t.setDaemon(True)
           t.start()
+          importlib.reload(U)
         except Exception as e:
           pass
 
