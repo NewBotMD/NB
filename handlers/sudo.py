@@ -436,7 +436,7 @@ def sudo(client, message,redis):
 					if get["ok"]:
 						Title = (get["result"]["title"] or "None")
 						Link = (redis.hget("{}Nbot:links".format(BOT_ID),ID) or GetLink(ID) or "none")
-						name = "<a href=\"{}\">{}</a>".format(Link,Title)
+						name = "[{}]({})".format(Title,Link)
 						N = r.ShowGPN.format(i,name,ID)
 						GPslist = GPslist+"\n\n"+N
 						i +=1
