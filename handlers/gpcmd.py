@@ -502,7 +502,7 @@ def gpcmd(client, message,redis):
 
     if rank != "admin" and rank != "owner":
       if re.search(c.deletebots, text):
-        bots = [x for x in client.iter_chat_members(chatID) if x.user.is_bot and x.user.id !=int(BOT_ID) and x.status != "administrator"]
+        bots = [x for x in client.iter_chat_members(chatID,filter="bots") if x.user.is_bot and x.user.id !=int(BOT_ID) and x.status != "administrator"]
         if bots:
           Bot("sendMessage",{"chat_id":chatID,"text":r.LenBots.format(len(bots)),"reply_to_message_id":message.message_id,"parse_mode":"html"})
           for u in bots:
@@ -511,6 +511,29 @@ def gpcmd(client, message,redis):
         else:
           Bot("sendMessage",{"chat_id":chatID,"text":r.NoBots,"reply_to_message_id":message.message_id,"parse_mode":"html"})
       
+      if re.search(c.deletebans, text):
+        kicked = [x for x in client.iter_chat_members(chatID,filter="kicked")]
+        if kicked:
+          Bot("sendMessage",{"chat_id":chatID,"text":r.Lenbans.format(len(kicked)),"reply_to_message_id":message.message_id,"parse_mode":"html"})
+          for u in kicked:
+            Bot("unbanChatMember",{"chat_id":chatID,"user_id":u.user.id})
+            redis.srem("{}Nbot:{}:bans".format(BOT_ID,chatID),u.user.id)
+            time.sleep(0.3)
+        else:
+          Bot("sendMessage",{"chat_id":chatID,"text":r.NobansC,"reply_to_message_id":message.message_id,"parse_mode":"html"})
+      
+
+      if re.search(c.deleterks, text):
+        restricted = [x for x in client.iter_chat_members(chatID,filter="restricted")]
+        if restricted:
+          Bot("sendMessage",{"chat_id":chatID,"text":r.Lenrks.format(len(restricted)),"reply_to_message_id":message.message_id,"parse_mode":"html"})
+          for u in restricted:
+            Bot("restrictChatMember",{"chat_id": chatID,"user_id": u.user.id,"can_send_messages": 1,"can_send_media_messages": 1,"can_send_other_messages": 1,"can_send_polls": 1,"can_change_info": 1,"can_add_web_page_previews": 1,"can_pin_messages": 1,})
+            redis.srem("{}Nbot:{}:restricteds".format(BOT_ID,chatID),u.user.id)
+            time.sleep(0.3)
+        else:
+          Bot("sendMessage",{"chat_id":chatID,"text":r.NorksC,"reply_to_message_id":message.message_id,"parse_mode":"html"})
+        
       if re.search(c.deleteDeleted, text):
         deleted = [x for x in client.iter_chat_members(chatID) if x.user.is_deleted]
         if deleted:
