@@ -197,7 +197,7 @@ def sendM(T,msg,message):
     Len = 3000
     msgs = [msg[y-Len:y] for y in range(Len, len(msg)+Len,Len)]
     for tx in msgs:
-      Bot("sendMessage",{"chat_id":chatID,"text":tx,"reply_to_message_id":message.message_id,"parse_mode":"html","disable_web_page_preview":True})
+      Bot("sendMessage",{"chat_id":chatID,"text":tx,"reply_to_message_id":message.message_id,"parse_mode":"markdown","disable_web_page_preview":True})
       time.sleep(0.3)
 
 def GetLink(chatID):
