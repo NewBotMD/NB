@@ -22,6 +22,7 @@ def ranks(client, message,redis):
 
 	if (rank is "sudo" or rank is "sudos" or rank is "creator" or rank is "owner"):
 		if re.search(c.admins, text) and Ckuser(message):
+			text = text.replace("مسح ","")
 			arrays = redis.smembers("{}Nbot:{}:admin".format(BOT_ID,chatID))
 			b = BYusers(arrays,chatID,redis,client)
 			kb = InlineKeyboardMarkup([[InlineKeyboardButton(r.delList.format(text), callback_data=json.dumps(["delList","admin",userID]))]])
@@ -31,6 +32,7 @@ def ranks(client, message,redis):
 				Bot("sendMessage",{"chat_id":chatID,"text":r.listempty.format(text),"reply_to_message_id":message.message_id,"parse_mode":"markdown"})
 		
 		if re.search(c.vips, text) and Ckuser(message):
+			text = text.replace("مسح ","")
 			arrays = redis.smembers("{}Nbot:{}:vip".format(BOT_ID,chatID))
 			b = BYusers(arrays,chatID,redis,client)
 			kb = InlineKeyboardMarkup([[InlineKeyboardButton(r.delList.format(text), callback_data=json.dumps(["delList","vip",userID]))]])
@@ -121,6 +123,7 @@ def ranks(client, message,redis):
 
 	if (rank is "sudo" or rank is "sudos" or rank is "creator"):
 		if re.search(c.owners, text) and Ckuser(message):
+			text = text.replace("مسح ","")
 			arrays = redis.smembers("{}Nbot:{}:owner".format(BOT_ID,chatID))
 			b = BYusers(arrays,chatID,redis,client)
 			kb = InlineKeyboardMarkup([[InlineKeyboardButton(r.delList.format(text), callback_data=json.dumps(["delList","owner",userID]))]])
