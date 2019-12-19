@@ -71,6 +71,7 @@ def sudo(client, message,redis):
 			redis.hset("{}Nbot:disabledgroupsTIME".format(BOT_ID),chatID,str(NextDay_Date))
 
 		if re.search(c.creators, text) and Ckuser(message):
+			text = text.replace("مسح ","")
 			arrays = redis.get("{}Nbot:{}:creator".format(BOT_ID,chatID))
 			if arrays:
 				print(arrays)
@@ -255,6 +256,7 @@ def sudo(client, message,redis):
 					Bot("sendMessage",{"chat_id":chatID,"text":r.DsetSudosShowE,"reply_to_message_id":message.message_id,"parse_mode":"html"})
 
 			if re.search(c.sudosList, text) and Ckuser(message):
+				text = text.replace("مسح ","")
 				arrays = redis.smembers("{}Nbot:sudos".format(BOT_ID,chatID))
 				b = BYusers(arrays,chatID,redis,client)
 				kb = InlineKeyboardMarkup([[InlineKeyboardButton(r.delList.format(text), callback_data=json.dumps(["delList","sudos",userID]))]])
