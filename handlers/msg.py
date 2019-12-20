@@ -62,28 +62,28 @@ def updateHandlers(client, message,redis):
 					add = redis.sadd("{}Nbot:groups".format(BOT_ID),chatID)
 					Bot("exportChatInviteLink",{"chat_id":chatID})
 					kb = InlineKeyboardMarkup([[InlineKeyboardButton(r.MoreInfo, url="t.me/nbbot")]])
-					Bot("sendMessage",{"chat_id":chatID,"text":r.doneadd.format(title),"reply_to_message_id":message.message_id,"parse_mode":"html","reply_markup":kb})
+					Bot("sendMessage",{"chat_id":chatID,"text":r.doneadd.format(title),"reply_to_message_id":message.message_id,"parse_mode":"markdown","reply_markup":kb})
 
 				elif text == c.add and redis.sismember("{}Nbot:disabledgroups".format(BOT_ID),chatID)  and Ckuser(message):
 					redis.sadd("{}Nbot:groups".format(BOT_ID),chatID)
 					redis.srem("{}Nbot:disabledgroups".format(BOT_ID),chatID)
 					redis.hdel("{}Nbot:disabledgroupsTIME".format(BOT_ID),chatID)
 					
-					Bot("sendMessage",{"chat_id":chatID,"text":r.doneadd2.format(title),"reply_to_message_id":message.message_id,"parse_mode":"html"})
+					Bot("sendMessage",{"chat_id":chatID,"text":r.doneadd2.format(title),"reply_to_message_id":message.message_id,"parse_mode":"markdown"})
 				if text == c.disabl  and Ckuser(message):
-					Bot("sendMessage",{"chat_id":chatID,"text":r.disabled.format(title),"reply_to_message_id":message.message_id,"parse_mode":"html"})
+					Bot("sendMessage",{"chat_id":chatID,"text":r.disabled.format(title),"reply_to_message_id":message.message_id,"parse_mode":"markdown"})
 
 		if text and group is True:
 			if (rank is "sudo" or rank is "sudos") or (redis.get("{}Nbot:autoaddbot".format(BOT_ID)) and GPranks(userID,chatID) == "creator"):
 				if text == c.add  and Ckuser(message):
-					Bot("sendMessage",{"chat_id":chatID,"text":r.doneadded.format(title),"reply_to_message_id":message.message_id,"parse_mode":"html"})
+					Bot("sendMessage",{"chat_id":chatID,"text":r.doneadded.format(title),"reply_to_message_id":message.message_id,"parse_mode":"markdown"})
 				if text == c.disabl  and Ckuser(message):
 					redis.srem("{}Nbot:groups".format(BOT_ID),chatID)
 					redis.sadd("{}Nbot:disabledgroups".format(BOT_ID),chatID)
 					NextDay_Date = datetime.datetime.today() + datetime.timedelta(days=1)
 					redis.hset("{}Nbot:disabledgroupsTIME".format(BOT_ID),chatID,str(NextDay_Date))
 					kb = InlineKeyboardMarkup([[InlineKeyboardButton(r.MoreInfo, url="t.me/nbbot")]])
-					Bot("sendMessage",{"chat_id":chatID,"text":r.disabl.format(title),"reply_to_message_id":message.message_id,"parse_mode":"html","reply_markup":kb})
+					Bot("sendMessage",{"chat_id":chatID,"text":r.disabl.format(title),"reply_to_message_id":message.message_id,"parse_mode":"markdown","reply_markup":kb})
 		
 		if (rank is "sudo" or rank is "sudos") and group is True:
 			t = threading.Thread(target=sudo,args=(client, message,redis))
