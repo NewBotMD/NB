@@ -1,6 +1,6 @@
 from utlis.rank import setrank,isrank,remrank,remsudos,setsudo, GPranks,Grank,IDrank
 from utlis.tg import Bot , Ckuser
-from utlis.send import send_msg, BYusers, Name,Glang
+from utlis.send import send_msg, BYusers, Name,Glang,sendM
 from utlis.locks import st,Clang,st_res
 from config import *
 
@@ -543,7 +543,20 @@ def gpcmd(client, message,redis):
             time.sleep(0.3)
         else:
           Bot("sendMessage",{"chat_id":chatID,"text":r.NoDeleted,"reply_to_message_id":message.message_id,"parse_mode":"html"})
-
+      
+      if re.search(c.tagall, text):
+        tagall = [x for x in client.iter_chat_members(chatID)]
+        if tagall:
+          listTag = ""
+          i = 1
+          for u in tagall:
+            if u.user.username:
+              listTag = listTag+"\n"+str(i)+" - [@{}]".format(u.user.username)
+            else:
+              listTag = listTag+"\n"+str(i)+" - [{}](tg://user?id={})".format(u.user.first_name,u.user.id)
+            i += 1 
+          sendM("NO",listTag,message)
+          
       if re.search(c.Chlang, text):
         Bot("sendMessage",{"chat_id":chatID,"text":r.Chlang,"reply_to_message_id":message.message_id,"parse_mode":"html","reply_markup":Clang(client, message,redis,r)})
       if re.search(c.PROadmins, text):
