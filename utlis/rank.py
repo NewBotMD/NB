@@ -141,7 +141,8 @@ def Grank(rank,r):
 
 	if rank == "admin":
 		T = r.Radmin
-
+	if rank == "administrator":
+		T = r.Radmin
 	if rank == "vip":
 		T = r.Rvip
 	return T
