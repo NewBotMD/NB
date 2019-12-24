@@ -407,11 +407,11 @@ def gpcmd(client, message,redis):
       if re.search(c.Blocklist, text):
         Botuser = client.get_me().username
         reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton(c.STword,url="https://telegram.me/{}?start=showBlocklist={}={}={}".format(Botuser,chatID,userID,"blockTEXTs")),InlineKeyboardButton(c.STgifs,url="https://telegram.me/{}?start=showBlocklist={}={}={}".format(Botuser,chatID,userID,"blockanimations")),],[InlineKeyboardButton(c.STphoto,url="https://telegram.me/{}?start=showBlocklist={}={}={}".format(Botuser,chatID,userID,"blockphotos")),InlineKeyboardButton(c.STsticker,url="https://telegram.me/{}?start=showBlocklist={}={}={}".format(Botuser,chatID,userID,"blockSTICKERs")),]])
-        Bot("sendMessage",{"chat_id":chatID,"text":r.blocklist.format(r.blocklist2,title),"reply_to_message_id":message.message_id,"parse_mode":"html","reply_markup":reply_markup})
+        Bot("sendMessage",{"chat_id":chatID,"text":r.blocklist.format(r.blocklist2,title),"reply_to_message_id":message.message_id,"reply_markup":reply_markup})
 
       if re.search(c.Replylist, text):
         reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton(c.STword,callback_data=json.dumps(["showreplylist","",userID])),InlineKeyboardButton(c.STgifs,callback_data=json.dumps(["showGFreplylist","",userID])),],[InlineKeyboardButton(c.STvoice,callback_data=json.dumps(["showVOreplylist","",userID])),InlineKeyboardButton(c.STsticker,callback_data=json.dumps(["showSTreplylist","",userID])),]])
-        Bot("sendMessage",{"chat_id":chatID,"text":r.blocklist.format(text,title),"reply_to_message_id":message.message_id,"parse_mode":"html","reply_markup":reply_markup})
+        Bot("sendMessage",{"chat_id":chatID,"text":r.blocklist.format(text,title),"reply_to_message_id":message.message_id,"reply_markup":reply_markup})
 
       if re.search(c.FloodT, text):
         Nu = text.split(" ")[2]
