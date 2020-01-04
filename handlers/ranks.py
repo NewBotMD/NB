@@ -41,14 +41,17 @@ def ranks(client, message,redis):
 			else:
 				Bot("sendMessage",{"chat_id":chatID,"text":r.listempty.format(text),"reply_to_message_id":message.message_id,"parse_mode":"markdown"})
 
-		if re.search(c.setadmin, text) and Ckuser(message):
+		orad = redis.hget("{}Nbot:adminor:cb".format(BOT_ID),chatID) or c.setadmin
+		orad2 = redis.hget("{}Nbot:adminor:cb2".format(BOT_ID),chatID) or c.setadmin2
+		if re.search(c.setadmin+"|"+orad, text) and Ckuser(message):
 			if re.search("@",text):
 				user = text.split("@")[1]
-			if re.search(c.setadmin2,text):
-				user = text.split(" ")[2]
+			if re.search(c.setadmin2+"|"+orad2,text):
+				user = int(re.search(r'\d+', text).group())
 			if message.reply_to_message:
 				user = message.reply_to_message.from_user.id
 			if 'user' not in locals():return False
+			message.text = c.orad
 			try:
 				getUser = client.get_users(user)
 				userId = getUser.id
@@ -80,15 +83,18 @@ def ranks(client, message,redis):
 					send_msg("UD",client, message,r.DremRK,"",getUser,redis)
 			except Exception as e:
 				Bot("sendMessage",{"chat_id":chatID,"text":r.userNocc,"reply_to_message_id":message.message_id,"parse_mode":"html"})
-	
-		if re.search(c.setvip, text) and Ckuser(message):
+		
+		orvip = redis.hget("{}Nbot:vipor:cb".format(BOT_ID),chatID) or c.setvip
+		orvip2 = redis.hget("{}Nbot:vipor:cb2".format(BOT_ID),chatID) or c.setvip2
+		if re.search(c.setvip+"|"+orvip, text) and Ckuser(message):
 			if re.search("@",text):
 				user = text.split("@")[1]
-			if re.search(c.setvip2,text):
-				user = text.split(" ")[2]
+			if re.search(c.setvip2+"|"+orvip2,text):
+				user = int(re.search(r'\d+', text).group())
 			if message.reply_to_message:
 				user = message.reply_to_message.from_user.id
 			if 'user' not in locals():return False
+			message.text = c.orvip
 			try:
 				getUser = client.get_users(user)
 				userId = getUser.id
@@ -99,6 +105,10 @@ def ranks(client, message,redis):
 				elif (setcr is True or setcr is 1):
 					send_msg("UD",client, message,r.setRK,"",getUser,redis)
 			except Exception as e:
+				import traceback
+
+				traceback.print_exc()
+				print(e)
 				Bot("sendMessage",{"chat_id":chatID,"text":r.userNocc,"reply_to_message_id":message.message_id,"parse_mode":"html"})
 
 		if re.search(c.remvip, text) and Ckuser(message):
@@ -132,14 +142,17 @@ def ranks(client, message,redis):
 			else:
 				Bot("sendMessage",{"chat_id":chatID,"text":r.listempty.format(text),"reply_to_message_id":message.message_id,"parse_mode":"markdown"})
 
-		if re.search(c.setowner, text) and Ckuser(message):
+		orow = redis.hget("{}Nbot:owneror:cb".format(BOT_ID),chatID) or c.setowner
+		orow2 = redis.hget("{}Nbot:owneror:cb2".format(BOT_ID),chatID) or c.setowner2
+		if re.search(c.setowner+"|"+orow, text) and Ckuser(message):
 			if re.search("@",text):
 				user = text.split("@")[1]
-			if re.search(c.setowner2,text):
-				user = text.split(" ")[2]
+			if re.search(c.setowner2+"|"+orow2,text):
+				user = int(re.search(r'\d+', text).group())
 			if message.reply_to_message:
 				user = message.reply_to_message.from_user.id
 			if 'user' not in locals():return False
+			message.text = c.orow
 			try:
 				getUser = client.get_users(user)
 				userId = getUser.id
