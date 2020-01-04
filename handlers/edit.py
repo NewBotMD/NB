@@ -17,5 +17,5 @@ def edit(client, message,redis):
             Bot("deleteMessage",{"chat_id":chatID,"message_id":message.message_id})
         if (rank is False or rank is 0) and group is True and not redis.sismember("{}Nbot:Ledits".format(BOT_ID),chatID):
             t = threading.Thread(target=delete,args=(client, message,redis))
-            t.setDaemon(True)
+            t.daemon = True
             t.start()
