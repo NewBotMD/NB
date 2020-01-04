@@ -140,6 +140,14 @@ def allGP(client, message,redis):
         ID = redis.hget("{}Nbot:VOreplys".format(BOT_ID),text)
         Bot("sendvoice",{"chat_id":chatID,"voice":ID,"reply_to_message_id":message.message_id})
 
+      if redis.hexists("{}Nbot:PHreplys".format(BOT_ID,chatID),text):
+        ID = redis.hget("{}Nbot:PHreplys".format(BOT_ID),text)
+        Bot("sendphoto",{"chat_id":chatID,"photo":ID,"reply_to_message_id":message.message_id})
+
+      if redis.hexists("{}Nbot:DOreplys".format(BOT_ID,chatID),text):
+        ID = redis.hget("{}Nbot:DOreplys".format(BOT_ID),text)
+        Bot("sendDocument",{"chat_id":chatID,"document":ID,"reply_to_message_id":message.message_id})
+
 
 
     if not redis.sismember("{}Nbot:ReplySend".format(BOT_ID),chatID):
@@ -162,6 +170,14 @@ def allGP(client, message,redis):
         ID = redis.hget("{}Nbot:{}:VOreplys".format(BOT_ID,chatID),text)
         Bot("sendvoice",{"chat_id":chatID,"voice":ID,"reply_to_message_id":message.message_id})
  
+      if redis.hexists("{}Nbot:{}:PHreplys".format(BOT_ID,chatID),text):
+        ID = redis.hget("{}Nbot:{}:PHreplys".format(BOT_ID,chatID),text)
+        Bot("sendphoto",{"chat_id":chatID,"photo":ID,"reply_to_message_id":message.message_id})
+
+      if redis.hexists("{}Nbot:{}:DOreplys".format(BOT_ID,chatID),text):
+        ID = redis.hget("{}Nbot:{}:DOreplys".format(BOT_ID,chatID),text)
+        Bot("sendDocument",{"chat_id":chatID,"document":ID,"reply_to_message_id":message.message_id})
+
   if redis.smembers("{}Nbot:botfiles".format(BOT_ID)):
     onlyfiles = [f for f in listdir("files") if isfile(join("files", f))]
     filesR = redis.smembers("{}Nbot:botfiles".format(BOT_ID))
@@ -172,7 +188,7 @@ def allGP(client, message,redis):
         try:
           U = importlib.import_module(UpMs)
           t = threading.Thread(target=U.updateMsgs,args=(client, message,redis))
-          t.setDaemon(True)
+          t.daemon = True
           t.start()
           importlib.reload(U)
         except Exception as e:
