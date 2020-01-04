@@ -25,14 +25,11 @@ def updateCallback(client, callback_query,redis):
           UpMs= "files."+fi
           try:
             U = importlib.import_module(UpMs)
- 
             t = threading.Thread(target=U.updateCb,args=(client, callback_query,redis))
             t.setDaemon(True)
             t.start()
             importlib.reload(U)
-      
           except Exception as e:
-            print(e)
             pass
       return False
     
@@ -47,14 +44,11 @@ def updateCallback(client, callback_query,redis):
           UpMs= "files."+fi
           try:
             U = importlib.import_module(UpMs)
- 
             t = threading.Thread(target=U.updateCb,args=(client, callback_query,redis))
             t.setDaemon(True)
             t.start()
             importlib.reload(U)
-      
           except Exception as e:
-            print(e)
             pass
     return False
     
@@ -128,6 +122,39 @@ def updateCallback(client, callback_query,redis):
   if chatID == userID:
     group = True
   if group is True and int(date[2]) == userID and not redis.get("{}Nbot:floodUsers:{}".format(BOT_ID,userID)):
+    if date[0] == "addor":
+      cpKey = date[1]
+      kbList = {"vip":{
+        "cb":"^%(tx)s$|^%(tx)s @(.*)$|%(tx)s [0-9]+$",
+        "cb2":"^%(tx)s [0-9]+$",
+        "rp":c.orvip,
+      },"owner":{
+        "cb":"^%(tx)s$|^%(tx)s @(.*)$|%(tx)s [0-9]+$",
+        "cb2":"^%(tx)s [0-9]+$",
+        "rp":c.orow,
+      },"admin":{
+        "cb":"^%(tx)s$|^%(tx)s @(.*)$|%(tx)s [0-9]+$",
+        "cb2":"^%(tx)s [0-9]+$",
+        "rp":c.orad,
+      },"ban":{
+        "cb":"^%(tx)s$|^%(tx)s @(.*)$|%(tx)s [0-9]+$",
+        "cb2":"^%(tx)s [0-9]+$",
+        "rp":c.orban,
+      },"tk":{
+        "cb":"^%(tx)s$|^%(tx)s @(.*)$|%(tx)s [0-9]+$",
+        "cb2":"^%(tx)s [0-9]+$",
+        "rp":c.ortk,
+      }
+      }
+      cc = re.findall(c.addor,callback_query.message.reply_to_message.text)
+      F = kbList[cpKey]
+      cb = F["cb"] % {'tx': cc[0]}
+      cb2 = F["cb2"] % {'tx': cc[0]}
+      print(cb,cb2)
+      redis.hset("{}Nbot:{}or:cb".format(BOT_ID,cpKey),chatID,cb)
+      redis.hset("{}Nbot:{}or:cb2".format(BOT_ID,cpKey),chatID,cb2)
+      callback_query.message.edit_text(r.Daddor.format(cc[0],F["rp"]))
+
     if date[0] == "delF":
       File = date[1]
       os.system("rm ./files/"+File)
@@ -655,7 +682,6 @@ def updateCallback(client, callback_query,redis):
         UpMs= "files."+fi
         try:
           U = importlib.import_module(UpMs)
-          
           t = threading.Thread(target=U.updateCb,args=(client, callback_query,redis))
           t.setDaemon(True)
           t.start()
