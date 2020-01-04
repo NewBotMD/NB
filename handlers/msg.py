@@ -87,30 +87,30 @@ def updateHandlers(client, message,redis):
 		
 		if (rank is "sudo" or rank is "sudos") and group is True:
 			t = threading.Thread(target=sudo,args=(client, message,redis))
-			t.setDaemon(True)
+			t.daemon = True
 			t.start()
 
 		if text and (rank is "sudo" or rank is "sudos" or rank is "creator" or rank is "owner") and group is True:
 			t = threading.Thread(target=ranks,args=(client, message,redis))
-			t.setDaemon(True)
+			t.daemon = True
 			t.start()
 		if text and (rank is "sudo" or rank is "sudos" or rank is "creator" or rank is "owner" or rank is "admin") and group is True and re.search(c.startlock,text):
 			if Ckuser(message):
 				t = threading.Thread(target=locks,args=(client, message,redis))
-				t.setDaemon(True)
+				t.daemon = True
 				t.start()
 		if (rank is False or rank is 0) and group is True:
 			t = threading.Thread(target=delete,args=(client, message,redis))
-			t.setDaemon(True)
+			t.daemon = True
 			t.start()
 
 		if (rank is "sudo" or rank is "sudos" or rank is "creator" or rank is "owner" or rank is "admin") and group is True:
 			t = threading.Thread(target=gpcmd,args=(client, message,redis))
-			t.setDaemon(True)
+			t.daemon = True
 			t.start()
 		if  group is True:
 			t = threading.Thread(target=allGP,args=(client, message,redis))
-			t.setDaemon(True)
+			t.daemon = True
 			t.start()
 
 
@@ -119,7 +119,7 @@ def updateHandlers(client, message,redis):
 		rank = isrank(redis,userID,chatID)
 		if (rank is "sudo" or rank is "sudos"):
 			t = threading.Thread(target=sudo,args=(client, message,redis))
-			t.setDaemon(True)
+			t.daemon = True
 			t.start()
 		if text and re.search("^/start$",text):
 			userID = message.from_user.id
