@@ -25,10 +25,9 @@ def updateInline(client, inline_query,redis):
         try:
           U = importlib.import_module(UpMs)
           t = threading.Thread(target=U.updateIn,args=(client, inline_query,redis))
-          t.setDaemon(True)
+          t.daemon = True
           t.start()
           importlib.reload(U)
         except Exception as e:
-          print(e)
           pass
 
