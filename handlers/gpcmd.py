@@ -52,6 +52,18 @@ def gpcmd(client, message,redis):
       redis.hset("{}Nbot:{}:VOreplys".format(BOT_ID,chatID),tx,ID)
       redis.hdel("{}Nbot:step".format(BOT_ID),userID)
       Bot("sendMessage",{"chat_id":chatID,"text":r.SRvo.format(tx),"reply_to_message_id":message.message_id,"parse_mode":"html"})
+    
+    if message.photo:
+      ID = message.photo.file_id
+      redis.hset("{}Nbot:{}:PHreplys".format(BOT_ID,chatID),tx,ID)
+      redis.hdel("{}Nbot:step".format(BOT_ID),userID)
+      Bot("sendMessage",{"chat_id":chatID,"text":r.SRph.format(tx),"reply_to_message_id":message.message_id,"parse_mode":"html"})
+    if message.document:
+      ID = message.document.file_id
+      redis.hset("{}Nbot:{}:DOreplys".format(BOT_ID,chatID),tx,ID)
+      redis.hdel("{}Nbot:step".format(BOT_ID),userID)
+      Bot("sendMessage",{"chat_id":chatID,"text":r.SRfi.format(tx),"reply_to_message_id":message.message_id,"parse_mode":"html"})
+
 
 
 ###############
@@ -88,11 +100,13 @@ def gpcmd(client, message,redis):
       else:
         Bot("sendMessage",{"chat_id":chatID,"text":r.listempty.format(text),"reply_to_message_id":message.message_id,"parse_mode":"markdown"})
 
-    if re.search(c.ban, text):
+    orban = redis.hget("{}Nbot:banor:cb".format(BOT_ID),chatID) or c.ban
+    orban2 = redis.hget("{}Nbot:banor:cb2".format(BOT_ID),chatID) or c.ban2
+    if re.search(c.ban+"|"+orban, text):
       if re.search("@",text):
         user = text.split("@")[1]
-      if re.search(c.ban2,text):
-        user = text.split(" ")[1]
+      if re.search(c.ban2+"|"+orban2,text):
+        user = int(re.search(r'\d+', text).group())
       if message.reply_to_message:
         user = message.reply_to_message.from_user.id
       if 'user' not in locals():return False
@@ -146,12 +160,14 @@ def gpcmd(client, message,redis):
           send_msg("BNN",client, message,r.Dunban,"bans",getUser,redis)
       except Exception as e:
         Bot("sendMessage",{"chat_id":chatID,"text":r.userNocc,"reply_to_message_id":message.message_id,"parse_mode":"html"})
-
-    if re.search(c.TK, text):
+   
+    ortk = redis.hget("{}Nbot:tkor:cb".format(BOT_ID),chatID) or c.TK
+    ortk2 = redis.hget("{}Nbot:tkor:cb2".format(BOT_ID),chatID) or c.TK2
+    if re.search(c.TK+"|"+ortk, text):
       if re.search("@",text):
         user = text.split("@")[1]
-      if re.search(c.TK2,text):
-        user = text.split(" ")[1]
+      if re.search(c.TK2+"|"+ortk2,text):
+        user = int(re.search(r'\d+', text).group())
       if message.reply_to_message:
         user = message.reply_to_message.from_user.id
       if 'user' not in locals():return False
@@ -209,7 +225,59 @@ def gpcmd(client, message,redis):
           send_msg("BNN",client, message,r.Dunrestricted,"restricteds",getUser,redis)
       except Exception as e:
         Bot("sendMessage",{"chat_id":chatID,"text":r.userNocc,"reply_to_message_id":message.message_id,"parse_mode":"html"})
+    
     if rank != "admin":
+      if re.search(c.addor,text):
+        cc= re.findall(c.addor,text)
+        kbList = {"vip":{
+          "cb":"^{0}$|^{0} @(.*)$|{0} {0-9}+$",
+          "cb2":"^{0}{0-9}+$",
+          "rp":c.orvip,
+        },"admin":{
+          "cb":"^{0}$|^{0} @(.*)$|{0} {0-9}+$",
+          "cb2":"^{0}{0-9}+$",
+          "rp":c.orad,
+        },"ban":{
+          "cb":"^{0}$|^{0} @(.*)$|{0} {0-9}+$",
+          "cb2":"^{0}{0-9}+$",
+          "rp":c.orban,
+        },"tk":{
+          "cb":"^{0}$|^{0} @(.*)$|{0} {0-9}+$",
+          "cb2":"^{0}{0-9}+$",
+          "rp":c.ortk,
+        }
+        }
+        if rank == "sudo":
+          kbList = {"vip":{
+            "cb":"^{0}$|^{0} @(.*)$|{0} {0-9}+$",
+            "cb2":"^{0}{0-9}+$",
+            "rp":c.orvip,
+          },"owner":{
+            "cb":"^{0}$|^{0} @(.*)$|{0} {0-9}+$",
+            "cb2":"^{0}{0-9}+$",
+            "rp":c.orow,
+          },"admin":{
+            "cb":"^{0}$|^{0} @(.*)$|{0} {0-9}+$",
+            "cb2":"^{0}{0-9}+$",
+            "rp":c.orad,
+          },"ban":{
+            "cb":"^{0}$|^{0} @(.*)$|{0} {0-9}+$",
+            "cb2":"^{0}{0-9}+$",
+            "rp":c.orban,
+          },"tk":{
+            "cb":"^{0}$|^{0} @(.*)$|{0} {0-9}+$",
+            "cb2":"^{0}{0-9}+$",
+            "rp":c.ortk,
+          }
+          } 
+        il = []
+        for key, value in kbList.items():
+          cb = json.dumps(["addor",key,userID])
+          rp = value["rp"]
+          il.append([InlineKeyboardButton(rp,callback_data=cb)])
+        kb = InlineKeyboardMarkup(il)
+        message.reply_text(r.addor.format(cc[0]),reply_markup=kb)
+
       if re.search(c.remallR, text):
         if re.search("@",text):
           user = text.split("@")[1]
@@ -323,6 +391,37 @@ def gpcmd(client, message,redis):
       if re.search(c.delIDC, text):
         redis.hdel("{}Nbot:SHOWid".format(BOT_ID),chatID)
         Bot("sendMessage",{"chat_id":chatID,"text":r.Ddelid,"reply_to_message_id":message.message_id,"parse_mode":"html"})
+      if re.search("^تعين ايدي$|^تعين ايدي (.*)$|^وضع ايدي$|^وضع ايدي (.*)$",text):
+        message.reply_text("""⚠️꒐ يمكنك تغير الايدي بأرسال
+⏺꒐ `تعين الايدي النص`
+
+🔽꒐ ويمكنك ايضاً اضافه
+{id} - لعرض الايدي
+{us} - لعرض المعرف
+{rk} - لعرض الرتبه
+{msgs} - لعرض عدد الرسائل
+{edits} - لعرض عدد السحكات
+{rate} - لعرض نسبه التفاعل
+⎯ ⎯ ⎯ ⎯""")
+      if re.search("^اضف رد$",text):
+        message.reply_text(  
+"""⚠️꒐ يمكنك اضف رد  بأرسال
+⏺꒐ `اضف رد النص`
+
+🔽꒐ ويمكنك ايضاً اضافه html
+
+<b>bold</b>
+*bold*
+
+<i>italic</i>
+__italic__
+
+<a href=\"https://t.me/mdddd/\">Mohammed</a>
+[Mohammed](https://t.me/mdddd/)
+
+<code>inline fixed-width code</code>
+`inline fixed-width code`
+⎯ ⎯ ⎯ ⎯""",parse_mode="markdown",disable_web_page_preview=True)
       if re.search(c.setIDC, text):
           tx = text.replace(c.RsetIDC,"")
           t = IDrank(redis,userID,chatID,r)
@@ -500,6 +599,7 @@ def gpcmd(client, message,redis):
       redis.hset("{}Nbot:links".format(BOT_ID),chatID,lk)
       Bot("sendMessage",{"chat_id":chatID,"text":r.Dsetlk.format(lk),"reply_to_message_id":message.message_id,"parse_mode":"html","disable_web_page_preview":True})
 
+#cre
     if rank != "admin" and rank != "owner":
       if re.search(c.deletebots, text):
         bots = [x for x in client.iter_chat_members(chatID,filter="bots") if x.user.is_bot and x.user.id !=int(BOT_ID) and x.status != "administrator"]
