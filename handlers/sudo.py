@@ -62,6 +62,19 @@ def sudo(client, message,redis):
 			redis.hdel("{}Nbot:stepSUDO".format(BOT_ID),userID)
 			Bot("sendMessage",{"chat_id":chatID,"text":r.SRvo.format(tx),"reply_to_message_id":message.message_id,"parse_mode":"html"})
 
+		if message.photo:
+			ID = message.photo.file_id
+			redis.hset("{}Nbot:PHreplys".format(BOT_ID),tx,ID)
+			redis.hdel("{}Nbot:stepSUDO".format(BOT_ID),userID)
+			Bot("sendMessage",{"chat_id":chatID,"text":r.SRph.format(tx),"reply_to_message_id":message.message_id,"parse_mode":"html"})
+		if message.document:
+			ID = message.document.file_id
+			redis.hset("{}Nbot:DOreplys".format(BOT_ID),tx,ID)
+			redis.hdel("{}Nbot:stepSUDO".format(BOT_ID),userID)
+			Bot("sendMessage",{"chat_id":chatID,"text":r.SRfi.format(tx),"reply_to_message_id":message.message_id,"parse_mode":"html"})
+
+
+
 	if text and (type is "supergroup" or type is "group"):
 		if re.search(c.leaveChatS, text):
 			Bot("leaveChat",{"chat_id":chatID})
