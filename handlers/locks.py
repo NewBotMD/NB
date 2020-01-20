@@ -428,6 +428,27 @@ def locks(client, message,redis):
         save = redis.sadd("{}Nbot:welcomeSend".format(BOT_ID),chatID)
         Bot("sendMessage",{"chat_id":chatID,"text":r.unADD.format(BY,R),"reply_to_message_id":message.message_id,"parse_mode":"html","disable_web_page_preview":True})
 
+  if rank != "admin":
+    if text == c.Lbancheck :
+      R = text.split(" ")[1]
+      get = redis.sismember("{}Nbot:bancheck".format(BOT_ID),chatID)
+      BY = "<a href=\"tg://user?id={}\">{}</a>".format(userID,userFN)
+      if get :
+        Bot("sendMessage",{"chat_id":chatID,"text":r.ADDed.format(BY,R),"reply_to_message_id":message.message_id,"parse_mode":"html","disable_web_page_preview":True})
+      else:
+        save = redis.sadd("{}Nbot:bancheck".format(BOT_ID),chatID)
+        Bot("sendMessage",{"chat_id":chatID,"text":r.ADD.format(BY,R),"reply_to_message_id":message.message_id,"parse_mode":"html","disable_web_page_preview":True})
+
+    if text == c.Ubancheck :
+      R = text.split(" ")[1]
+      BY = "<a href=\"tg://user?id={}\">{}</a>".format(userID,userFN)
+      get = redis.sismember("{}Nbot:bancheck".format(BOT_ID),chatID)
+      if get :
+        save = redis.srem("{}Nbot:bancheck".format(BOT_ID),chatID)
+        Bot("sendMessage",{"chat_id":chatID,"text":r.unADD.format(BY,R),"reply_to_message_id":message.message_id,"parse_mode":"html","disable_web_page_preview":True})
+      else:
+        Bot("sendMessage",{"chat_id":chatID,"text":r.unADDed.format(BY,R),"reply_to_message_id":message.message_id,"parse_mode":"html","disable_web_page_preview":True})
+
     if text == c.Lreply :
       R = text.split(" ")[1]
       get = redis.sismember("{}Nbot:ReplySend".format(BOT_ID),chatID)
