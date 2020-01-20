@@ -1,6 +1,6 @@
 from utlis.rank import setrank,isrank,remrank,remsudos,setsudo, GPranks,Grank,IDrank
 from utlis.tg import Bot , Ckuser
-from utlis.send import send_msg, BYusers, Name,Glang,sendM
+from utlis.send import send_msg, BYusers, Name,Glang,sendM,getAge
 from utlis.locks import st,Clang,st_res
 from config import *
 
@@ -387,6 +387,17 @@ def gpcmd(client, message,redis):
         kb = InlineKeyboardMarkup([[InlineKeyboardButton(r.fset.format(tx),callback_data=json.dumps(["floodset",get,userID]))]])
         Bot("sendMessage",{"chat_id":chatID,"text":r.Tfset,"reply_to_message_id":message.message_id,"parse_mode":"html","reply_markup":kb})
 
+      if re.search(c.twostepset, text):
+        if redis.hexists("{}Nbot:bancheck:t".format(BOT_ID),chatID):
+          get = redis.hget("{}Nbot:bancheck:t".format(BOT_ID),chatID)
+        else:
+          get = "eq"
+        if get == "eq":
+          tx = r.Teq
+        if get == "two":
+          tx =  r.Ttwo
+        kb = InlineKeyboardMarkup([[InlineKeyboardButton(r.tset.format(tx),callback_data=json.dumps(["twostepset",get,userID]))]])
+        Bot("sendMessage",{"chat_id":chatID,"text":r.Ttset,"reply_to_message_id":message.message_id,"parse_mode":"html","reply_markup":kb})
 
       if re.search(c.delIDC, text):
         redis.hdel("{}Nbot:SHOWid".format(BOT_ID),chatID)
@@ -428,7 +439,8 @@ __italic__
           msgs = (redis.hget("{}Nbot:{}:msgs".format(BOT_ID,chatID),userID) or 0)
           edits = (redis.hget("{}Nbot:{}:edits".format(BOT_ID,chatID),userID) or 0)
           rate = int(msgs)*100/20000
-          v = Bot("sendMessage",{"chat_id":chatID,"text":tx.format(us=("@"+username or "None"),id=userID,rk=t,msgs=msgs,edits=edits,rate=str(rate)+"%"),"reply_to_message_id":message.message_id,"parse_mode":"html"})
+          age = getAge(userID,r)
+          v = Bot("sendMessage",{"chat_id":chatID,"text":tx.format(us=("@"+username or "None"),id=userID,rk=t,msgs=msgs,edits=edits,age=age,rate=str(rate)+"%"),"reply_to_message_id":message.message_id,"parse_mode":"html"})
           if v["ok"]:
             redis.hset("{}Nbot:SHOWid".format(BOT_ID),chatID,tx)
             Bot("sendMessage",{"chat_id":chatID,"text":r.DsetIDShow,"reply_to_message_id":message.message_id,"parse_mode":"html"})
