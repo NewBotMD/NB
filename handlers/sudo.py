@@ -397,7 +397,8 @@ def sudo(client, message,redis):
 						send_msg("BNN",client, message,r.restrictedall,"restricteds",getUser,redis)
 						redis.sadd("{}Nbot:restricteds".format(BOT_ID),userId)
 						if (GetGprank == "member"):
-							Bot("restrictChatMember",{"chat_id": chatID,"user_id": userId,"can_send_messages": 0,"can_send_media_messages": 0,"can_send_other_messages": 0,"can_send_polls": 0,"can_change_info": 0,"can_add_web_page_previews": 0,"can_pin_messages": 0,})
+							Bot("restrictChatMember",{"chat_id": chatID,"user_id": userId,"can_send_messages": 0,"can_send_media_messages": 0,"can_send_other_messages": 0,
+						    "can_send_polls": 0,"can_change_info": 0,"can_add_web_page_previews": 0,"can_pin_messages": 0,"can_invite_users": 0,})
 				except Exception as e:
 					print(e)
 					Bot("sendMessage",{"chat_id":chatID,"text":r.userNocc,"reply_to_message_id":message.message_id,"parse_mode":"html"})
