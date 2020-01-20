@@ -1,5 +1,5 @@
 from utlis.rank import setrank,isrank,remrank,remsudos,setsudo,GPranks,IDrank
-from utlis.send import send_msg, BYusers, Sendto, fwdto,Name,Glang
+from utlis.send import send_msg, BYusers, Sendto, fwdto,Name,Glang,getAge
 from utlis.locks import st,getOR,Clang,st_res
 from utlis.tg import Bot
 from config import *
@@ -66,6 +66,20 @@ def updateCallback(client, callback_query,redis):
   moduleREPLY = "lang."+lang+"-reply"
   c = importlib.import_module(moduleCMD)
   r = importlib.import_module(moduleREPLY)
+  
+
+  if date[0] == "Cordertow":
+    rank = isrank(redis,userID,chatID)
+    if (rank is "sudo" or rank is "sudos" or rank is "creator" or rank is "owner"):
+      if redis.sismember("{}Nbot:{}:bans".format(BOT_ID,chatID),date[1]):
+        GetGprank = GPranks(date[1],chatID)
+        if GetGprank == "kicked":
+          Bot("unbanChatMember",{"chat_id":chatID,"user_id":date[1]})
+        redis.srem("{}Nbot:{}:bans".format(BOT_ID,chatID),date[1])
+        Bot("editMessageText",{"chat_id":chatID,"text":r.doneCO,"message_id":message_id,"disable_web_page_preview":True})
+      else:
+        Bot("editMessageText",{"chat_id":chatID,"text":r.ARdoneCO,"message_id":message_id,"disable_web_page_preview":True})
+    return False
   if date[0] == "delBL":
     Hash = date[1]
     chat = date[3]
@@ -122,6 +136,26 @@ def updateCallback(client, callback_query,redis):
   if chatID == userID:
     group = True
   if group is True and int(date[2]) == userID and not redis.get("{}Nbot:floodUsers:{}".format(BOT_ID,userID)):
+    if date[0] == "delcheck":
+        reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton(r.notcertain, callback_data=json.dumps(["kickcheck","",userID])),InlineKeyboardButton(r.certain, callback_data=json.dumps(["certain","",userID]))]])
+        random.shuffle(reply_markup.inline_keyboard[0])
+        Bot("editMessageText",{"chat_id":chatID,"text":r.ucertain,"message_id":message_id,"disable_web_page_preview":True,"reply_markup":reply_markup})
+
+    if date[0] == "certain":
+      Bot("restrictChatMember",{"chat_id": chatID,"user_id":userID,"can_send_messages": 1,"can_send_media_messages": 1,"can_send_other_messages": 1,"can_send_polls": 1,"can_change_info": 1,"can_add_web_page_previews": 1,"can_pin_messages": 1,})
+      T ="<a href=\"tg://user?id={}\">{}</a>".format(userID,Name(userFN))
+      Bot("editMessageText",{"chat_id":chatID,"text":r.unrestricted.format(T),"message_id":message_id,"disable_web_page_preview":True,"parse_mode":"html"})
+      
+
+    if date[0] == "kickcheck":
+      Bot("kickChatMember",{"chat_id":chatID,"user_id":userID})
+      T ="<a href=\"tg://user?id={}\">{}</a>".format(userID,Name(userFN))
+      crid = redis.get("{}Nbot:{}:creator".format(BOT_ID,chatID))
+      redis.sadd("{}Nbot:{}:bans".format(BOT_ID,chatID),userID)
+      reply_markup = InlineKeyboardMarkup([[InlineKeyboardButton(r.Corder, callback_data=json.dumps(["Cordertow",userID]))]])
+      Bot("editMessageText",{"chat_id":chatID,"text":r.bancheck.format(T),"message_id":message_id,"disable_web_page_preview":True,"parse_mode":"html","reply_markup":reply_markup})
+      
+
     if date[0] == "addor":
       cpKey = date[1]
       kbList = {"vip":{
@@ -193,6 +227,22 @@ def updateCallback(client, callback_query,redis):
       kb = InlineKeyboardMarkup(array)
       Bot("editMessageReplyMarkup",{"chat_id":chatID,"message_id":message_id,"disable_web_page_preview":True,"reply_markup":kb})
 
+    if date[0] == "twostepset":
+      get = date[1] 
+      if get == "eq":
+        redis.hset("{}Nbot:bancheck:t".format(BOT_ID),chatID,"two")
+        tx = r.Ttwo
+        g= "two"
+      if get == "two":
+        redis.hdel("{}Nbot:bancheck:t".format(BOT_ID),chatID)
+        
+        g= "eq"
+        tx =  r.Teq
+      kb = InlineKeyboardMarkup([[InlineKeyboardButton(r.tset.format(tx),callback_data=json.dumps(["twostepset",g,userID]))]])
+      Bot("editMessageReplyMarkup",{"chat_id":chatID,"message_id":message_id,"disable_web_page_preview":True,"reply_markup":kb})
+      
+
+
     if date[0] == "floodset":
       get = date[1] 
       if get == "ban":
@@ -231,6 +281,7 @@ def updateCallback(client, callback_query,redis):
 
       else:
         Bot("answerCallbackQuery",{"callback_query_id":callback_query.id,"text":r.SudoOnle,"show_alert":True})
+
     if date[0] == "Chlang":
       name = date[1]
       redis.srem("{}Nbot:lang:ar".format(BOT_ID),chatID)
@@ -245,7 +296,8 @@ def updateCallback(client, callback_query,redis):
       msgs = (redis.hget("{}Nbot:{}:msgs".format(BOT_ID,chatID),userID) or 0)
       edits = (redis.hget("{}Nbot:{}:edits".format(BOT_ID,chatID),userID) or 0)
       rate = int(msgs)*100/20000
-      reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton(Name(userFN),url="t.me/nbbot")],[InlineKeyboardButton(r.Rrank.format(t),url="t.me/nbbot")],[InlineKeyboardButton(r.Rmsgs.format(msgs),url="t.me/nbbot")],[InlineKeyboardButton(r.Rrate.format(str(rate)+"%"),url="t.me/nbbot")],[InlineKeyboardButton(r.Redits.format(edits),url="t.me/nbbot")]])
+      age = getAge(userID,r)
+      reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton(Name(userFN),url="t.me/nbbot")],[InlineKeyboardButton(r.Rrank.format(t),url="t.me/nbbot")],[InlineKeyboardButton(r.Rmsgs.format(msgs),url="t.me/nbbot")],[InlineKeyboardButton(r.Rrate.format(str(rate)+"%"),url="t.me/nbbot")],[InlineKeyboardButton(r.Redits.format(edits),url="t.me/nbbot")],[InlineKeyboardButton(r.Rage.format(age),url="t.me/nbbot")]])
       Bot("editMessageReplyMarkup",{"chat_id":chatID,"message_id":message_id,"disable_web_page_preview":True,"reply_markup":reply_markup})
     if re.search("ShowO",date[0]):
       T = date[0].replace("ShowO","")
