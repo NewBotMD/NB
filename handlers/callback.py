@@ -627,7 +627,7 @@ def updateCallback(client, callback_query,redis):
       else:
         T = (redis.hget("{}Nbot:time_ck".format(BOT_ID),chatID) or 3)
         m = (redis.hget("{}Nbot:max_msg".format(BOT_ID),chatID) or 10)
-        Bot("editMessageText",{"chat_id":chatID,"text":r.st2.format(title,T,m),"message_id":message_id,"disable_web_page_preview":True,"reply_markup":st(client, callback_query,redis,int(date[3])),"parse_mode":"html"})
+        Bot("editMessageText",{"chat_id":chatID,"text":r.st2.format(T,m),"message_id":message_id,"disable_web_page_preview":True,"reply_markup":st(client, callback_query,redis,int(date[3])),"parse_mode":"html"})
 
     if date[0] == "delListblockTEXTs":
       redis.delete("{}Nbot:{}:blockTEXTs".format(BOT_ID,chatID))
