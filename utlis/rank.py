@@ -124,6 +124,8 @@ def IDrank(redis,userID,chatID,r):
 
 	if rank == "vip":
 		T = r.Rvip
+	if rank == "bot":
+	  T = "bot"
 	return T
 
 def Grank(rank,r):
@@ -145,5 +147,7 @@ def Grank(rank,r):
 		T = r.Radmin
 	if rank == "vip":
 		T = r.Rvip
+	if rank == "bot":
+	  T = "bot"
 	return T
 
