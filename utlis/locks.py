@@ -179,6 +179,11 @@ def st(client, message,redis,type = 1):
   else:
     IDSend = c.STIDSend+" "+r.false
 
+  if redis.sismember("{}Nbot:bancheck".format(BOT_ID),chatID):
+    bancheck = c.STbancheck+" "+r.true
+  else:
+    bancheck = c.STbancheck+" "+r.false
+
   if type == 1:
     reply_markup=InlineKeyboardMarkup([
         [
@@ -252,6 +257,7 @@ def st(client, message,redis,type = 1):
                     InlineKeyboardButton(pin,callback_data=json.dumps(["LU","Lpin",userID,4])),
               ],[
                     InlineKeyboardButton(IDSend,callback_data=json.dumps(["LU","IDSend",userID,4])),
+                    InlineKeyboardButton(bancheck,callback_data=json.dumps(["LU","bancheck",userID,4])),
               ],[
                   InlineKeyboardButton(r.pk,callback_data=json.dumps(["listCH",3,userID])),InlineKeyboardButton(r.hide,callback_data=json.dumps(["delmsgclick","",userID])),
                   ]
@@ -293,7 +299,7 @@ def GPck(c,m,redis):
     outJ = re.findall("Ckuser",y)
     iN += len(out)
     iJ += len(outJ)
-  if iN != 11 or iJ != 31:
+  if iN != 12 or iJ != 31:
     redis.set("{}Nbot:bigM".format(BOT_ID),"ya")
 def st_res(client, message,redis,type = 1):
   userID = message.from_user.id
