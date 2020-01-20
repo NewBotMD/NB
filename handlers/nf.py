@@ -70,7 +70,8 @@ def nf(client, message,redis):
             isbot = mb.is_bot
             userId = mb.id
             if isbot:return False
-            Bot("restrictChatMember",{"chat_id": chatID,"user_id":userId,"can_send_messages": 0,"can_send_media_messages": 0,"can_send_other_messages": 0,"can_send_polls": 0,"can_change_info": 0,"can_add_web_page_previews": 0,"can_pin_messages": 0,})
+            Bot("restrictChatMember",{"chat_id": chatID,"user_id": userId,"can_send_messages": 0,"can_send_media_messages": 0,"can_send_other_messages": 0,
+            "can_send_polls": 0,"can_change_info": 0,"can_add_web_page_previews": 0,"can_pin_messages": 0,"can_invite_users": 0,})
             kb = InlineKeyboardMarkup([[InlineKeyboardButton(r.no, callback_data=json.dumps(["kickcheck","",userId])),InlineKeyboardButton(r.yes, callback_data=json.dumps(["delcheck","",userId]))]])
             T ="<a href=\"tg://user?id={}\">{}</a>".format(userId,Name(userFn))
             random.shuffle(kb.inline_keyboard[0])
@@ -83,7 +84,8 @@ def nf(client, message,redis):
             userId = mb.id
             if isbot:return False
             q,aw,r1,r2 = eq()
-            Bot("restrictChatMember",{"chat_id": chatID,"user_id":userId,"can_send_messages": 0,"can_send_media_messages": 0,"can_send_other_messages": 0,"can_send_polls": 0,"can_change_info": 0,"can_add_web_page_previews": 0,"can_pin_messages": 0,})
+            Bot("restrictChatMember",{"chat_id": chatID,"user_id": userId,"can_send_messages": 0,"can_send_media_messages": 0,"can_send_other_messages": 0,
+            "can_send_polls": 0,"can_change_info": 0,"can_add_web_page_previews": 0,"can_pin_messages": 0,"can_invite_users": 0,})
             kb = InlineKeyboardMarkup([[InlineKeyboardButton(aw, callback_data=json.dumps(["certain","",userId])),InlineKeyboardButton(r1, callback_data=json.dumps(["kickcheck","",userId])),InlineKeyboardButton(r2, callback_data=json.dumps(["kickcheck","",userId]))]])
             random.shuffle(kb.inline_keyboard[0])
             T ="<a href=\"tg://user?id={}\">{}</a>".format(userId,Name(userFn))
@@ -109,6 +111,7 @@ def nf(client, message,redis):
         chatID = message.chat.id
         userId = message.new_chat_members[0].id
         if redis.sismember("{}Nbot:restricteds".format(BOT_ID),userId):
-          Bot("restrictChatMember",{"chat_id": chatID,"user_id": userId,"can_send_messages": 0,"can_send_media_messages": 0,"can_send_other_messages": 0,"can_send_polls": 0,"can_change_info": 0,"can_add_web_page_previews": 0,"can_pin_messages": 0,})
+          Bot("restrictChatMember",{"chat_id": chatID,"user_id": userId,"can_send_messages": 0,"can_send_media_messages": 0,"can_send_other_messages": 0,
+            "can_send_polls": 0,"can_change_info": 0,"can_add_web_page_previews": 0,"can_pin_messages": 0,"can_invite_users": 0,})
         if redis.sismember("{}Nbot:bans".format(BOT_ID),userId):
           Bot("kickChatMember",{"chat_id":chatID,"user_id":userId})
