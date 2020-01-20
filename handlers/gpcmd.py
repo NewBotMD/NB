@@ -190,7 +190,7 @@ def gpcmd(client, message,redis):
             send_msg("BNN",client, message,r.Drestricted,"restricteds",getUser,redis)
           else:
             Bot("restrictChatMember",{"chat_id": chatID,"user_id": userId,"can_send_messages": 0,"can_send_media_messages": 0,"can_send_other_messages": 0,
-            "can_send_polls": 0,"can_change_info": 0,"can_add_web_page_previews": 0,"can_pin_messages": 0,})
+            "can_send_polls": 0,"can_change_info": 0,"can_add_web_page_previews": 0,"can_pin_messages": 0,"can_invite_users": 0,})
             redis.sadd("{}Nbot:{}:restricteds".format(BOT_ID,chatID),userId)
             send_msg("BN",client, message,r.restricted,"restricteds",getUser,redis)
         elif (GetGprank == "creator" or GetGprank == "administrator") or (Getrank != False or Getrank != 0):
@@ -218,7 +218,7 @@ def gpcmd(client, message,redis):
           return False
         if GetGprank == "restricted":
           Bot("restrictChatMember",{"chat_id": chatID,"user_id": userId,"can_send_messages": 1,"can_send_media_messages": 1,"can_send_other_messages": 1,"can_send_polls": 1,
-          "can_change_info": 1,"can_add_web_page_previews": 1,"can_pin_messages": 1,})
+          "can_change_info": 1,"can_add_web_page_previews": 1,"can_pin_messages": 1,"can_invite_users": 1,})
           redis.srem("{}Nbot:{}:restricteds".format(BOT_ID,chatID),userId)
           send_msg("BN",client, message,r.unrestricted,"restricteds",getUser,redis)
         else:
@@ -640,7 +640,8 @@ __italic__
         if restricted:
           Bot("sendMessage",{"chat_id":chatID,"text":r.Lenrks.format(len(restricted)),"reply_to_message_id":message.message_id,"parse_mode":"html"})
           for u in restricted:
-            Bot("restrictChatMember",{"chat_id": chatID,"user_id": u.user.id,"can_send_messages": 1,"can_send_media_messages": 1,"can_send_other_messages": 1,"can_send_polls": 1,"can_change_info": 1,"can_add_web_page_previews": 1,"can_pin_messages": 1,})
+            Bot("restrictChatMember",{"chat_id": chatID,"user_id": userId,"can_send_messages": 1,"can_send_media_messages": 1,"can_send_other_messages": 1,"can_send_polls": 1,
+          "can_change_info": 1,"can_add_web_page_previews": 1,"can_pin_messages": 1,"can_invite_users": 1,})
             redis.srem("{}Nbot:{}:restricteds".format(BOT_ID,chatID),u.user.id)
             time.sleep(0.3)
         else:
