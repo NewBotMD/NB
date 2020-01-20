@@ -3,7 +3,7 @@ from utlis.tg import Bot
 from config import *
 
 from pyrogram import ReplyKeyboardMarkup, InlineKeyboardMarkup, InlineKeyboardButton
-import threading, requests, time, random, re, json ,os
+import threading, requests, time, random, re, json ,os ,datetime
 import importlib
 
 def send_msg(type,client, message,textM,Lhash,T,redis):
@@ -233,3 +233,85 @@ def Glang(redis,chatID):
   else :
     lang = "arem"
   return lang
+
+#from https://github.com/wjclub/telegram-bot-getids/blob/master/idage.js
+def getDate(userID):
+    ages = {
+        "2768409"   : 1383264000,
+        "7679610"   : 1388448000,
+        "11538514"  : 1391212000,
+        "15835244"  : 1392940000,
+        "23646077"  : 1393459000,
+        "38015510"  : 1393632000,
+        "44634663"  : 1399334000,
+        "46145305"  : 1400198000,
+        "54845238"  : 1411257000,
+        "63263518"  : 1414454000,
+        "101260938" : 1425600000,
+        "101323197" : 1426204000,
+        "111220210" : 1433376000,
+        "103258382" : 1432771000,
+        "103151531" : 1439078000,
+        "116812045" : 1429574000,
+        "122600695" : 1439683000,
+        "109393468" : 1437696000,
+        "112594714" : 1437782000,
+        "124872445" : 1439856000,
+        "130029930" : 1444003000,
+        "125828524" : 1441324000,
+        "133909606" : 1444176000,
+        "157242073" : 1448928000,
+        "143445125" : 1452211000,
+        "148670295" : 1453420000,
+        "152079341" : 1446768000,
+        "171295414" : 1457481000,
+        "181783990" : 1460246000,
+        "222021233" : 1465344000,
+        "225034354" : 1466208000,
+        "278941742" : 1473465000,
+        "285253072" : 1476835000,
+        "294851037" : 1479600000,
+        "297621225" : 1481846000,
+        "328594461" : 1482969000,
+        "337808429" : 1487707000,
+        "341546272" : 1487782000,
+        "352940995" : 1487894000,
+        "369669043" : 1490918000,
+        "400169472" : 1501459000,
+        "805158066" : 1563208000
+    }
+    
+    ids = list(ages.keys())
+    nids = [int(x) for x in ids]
+    minId = nids[0]
+    maxId = nids[len(nids) - 1]
+    
+    if userID < minId:
+        return [-1, ages[ids[0]]]
+    elif userID > maxId:
+        return [1, ages[ids[len(ids) - 1]]]
+    else:
+        lid = nids[0]
+        i = 0
+        while i < len(ids):
+            if userID <= nids[i] :
+                uid = nids[i]
+                lage = ages[str(lid)]
+                uage = ages[str(uid)]
+                idratio = ((userID - lid) / (uid - lid))
+                midDate = (idratio * (uage - lage)) + lage
+                return [0, midDate]
+            else:
+                lid = nids[i]
+            i += 1
+def getAge(userID,r):
+    ar = getDate(userID)
+    dt = datetime.datetime.fromtimestamp(ar[1]).strftime('%Y/%m')
+    if ar[0] < 0:
+        v = 'older_than'
+    elif ar[0] > 0:
+        v = 'newer_than'
+    else:
+        v = 'aprox'
+    t = "{} {}".format(r.age[v],dt)
+    return t
