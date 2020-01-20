@@ -1,11 +1,11 @@
 from utlis.rank import setrank,isrank,remrank,remsudos,setsudo, GPranks,IDrank
-from utlis.send import send_msg, BYusers, GetLink,Name,Glang
+from utlis.send import send_msg, BYusers, GetLink,Name,Glang,getAge
 from utlis.locks import st,getOR
 from utlis.tg import Bot
 from config import *
 
 from pyrogram import ReplyKeyboardMarkup, InlineKeyboardMarkup, InlineKeyboardButton
-import threading, requests, time, random, re, json
+import threading, requests, time, random, re, json, datetime
 import importlib
 from os import listdir
 from os.path import isfile, join
@@ -32,6 +32,29 @@ def allGP(client, message,redis):
   r = importlib.import_module(moduleREPLY)
   redis.hincrby("{}Nbot:{}:msgs".format(BOT_ID,chatID),userID)
   if text :
+    if re.search(c.setGPadmin,text):
+      if re.search("@",text):
+        user = text.split("@")[1]
+      if re.search(c.setGPadmin2,text):
+        user = int(re.search(r'\d+', text).group())
+      if message.reply_to_message:
+        user = message.reply_to_message.from_user.id
+      if 'user' not in locals():return False
+      if GPranks(userID,chatID) == "member":return False
+      Getus = Bot("getChatMember",{"chat_id":chatID,"user_id":userID})["result"]
+      if Getus["status"] == "administrator" and not Getus["can_promote_members"]:return False
+      try:
+        getUser = client.get_users(user)
+        userId = getUser.id
+        userFn = getUser.first_name
+        if GPranks(userId,chatID) != "member":return False
+        pr = Bot("promoteChatMember",{"chat_id":chatID,"user_id":userId,"can_change_info":1,"can_delete_messages":1,"can_invite_users":1,"can_restrict_members":1,"can_pin_messages":1})
+        if pr["ok"]:
+          T ="<a href=\"tg://user?id={}\">{}</a>".format(userId,Name(userFn))
+          Bot("sendMessage",{"chat_id":chatID,"text":r.prGPadmin.format(T),"reply_to_message_id":message.message_id,"parse_mode":"html"})
+      except Exception as e:
+        Bot("sendMessage",{"chat_id":chatID,"text":r.userNocc,"reply_to_message_id":message.message_id,"parse_mode":"html"})
+
     if re.search(c.sors,text):
       kb = InlineKeyboardMarkup([[InlineKeyboardButton(r.MoreInfo, url="t.me/nbbot")]])
       Botuser = client.get_me().username
@@ -46,8 +69,6 @@ def allGP(client, message,redis):
       reply_markup = getOR(rank,r,userID)
       Bot("sendMessage",{"chat_id":chatID,"text":r.Showall,"reply_to_message_id":message.message_id,"parse_mode":"html","disable_web_page_preview":True,"reply_markup":reply_markup})
 
-
-
     if text == c.ID and not redis.sismember("{}Nbot:IDSend".format(BOT_ID),chatID) and not message.reply_to_message:
       Ch = True
       if redis.sismember("{}Nbot:IDpt".format(BOT_ID),chatID):
@@ -55,6 +76,7 @@ def allGP(client, message,redis):
         msgs = (redis.hget("{}Nbot:{}:msgs".format(BOT_ID,chatID),userID) or 0)
         edits = (redis.hget("{}Nbot:{}:edits".format(BOT_ID,chatID),userID) or 0)
         rate = int(msgs)*100/20000
+        age = getAge(userID,r)
         if redis.hget("{}Nbot:SHOWid".format(BOT_ID),chatID):
           tx = redis.hget("{}Nbot:SHOWid".format(BOT_ID),chatID)
         else:
@@ -68,9 +90,9 @@ def allGP(client, message,redis):
           else:
             Ch = False
             file_id = get["result"]["photos"][0][0]["file_id"]
-            Bot("sendPhoto",{"chat_id":chatID,"photo":file_id,"caption":tx.format(us=("@"+username or "None"),id=userID,rk=t,msgs=msgs,edits=edits,rate=str(rate)+"%"),"reply_to_message_id":message.message_id,"parse_mode":"html"})
+            Bot("sendPhoto",{"chat_id":chatID,"photo":file_id,"caption":tx.format(us=("@"+username or "None"),id=userID,rk=t,msgs=msgs,edits=edits,age=age,rate=str(rate)+"%"),"reply_to_message_id":message.message_id,"parse_mode":"html"})
         if Ch == True:
-          Bot("sendMessage",{"chat_id":chatID,"text":tx.format(us=("@"+username or "None"),id=userID,rk=t,msgs=msgs,edits=edits,rate=str(rate)+"%"),"reply_to_message_id":message.message_id,"parse_mode":"html"})
+          Bot("sendMessage",{"chat_id":chatID,"text":tx.format(us=("@"+username or "None"),id=userID,rk=t,msgs=msgs,edits=edits,age=age,rate=str(rate)+"%"),"reply_to_message_id":message.message_id,"parse_mode":"html"})
 
       if not redis.sismember("{}Nbot:IDSendPH".format(BOT_ID),chatID) and not redis.sismember("{}Nbot:IDpt".format(BOT_ID),chatID):
         get = Bot("getUserProfilePhotos",{"user_id":userID,"offset":0,"limit":1})
@@ -91,13 +113,31 @@ def allGP(client, message,redis):
 
     if text == c.ID and not redis.sismember("{}Nbot:IDSend".format(BOT_ID),chatID) and message.reply_to_message:
       us = message.reply_to_message.from_user.id
-      Bot("sendMessage",{"chat_id":chatID,"text":us,"reply_to_message_id":message.message_id,"parse_mode":"html"})
+      rusername = message.reply_to_message.from_user.username
+      if rusername is None:
+        rusername = "None"
+      t = IDrank(redis,us,chatID,r)
+      msgs = (redis.hget("{}Nbot:{}:msgs".format(BOT_ID,chatID),us) or 0)
+      edits = (redis.hget("{}Nbot:{}:edits".format(BOT_ID,chatID),us) or 0)
+      rate = int(msgs)*100/20000
+      age = getAge(us,r)
+      tx = r.ReIDnPT
+      Bot("sendMessage",{"chat_id":chatID,"text":tx.format(Reus=("@"+rusername or "None"),ReID=us,Rerank=t,Remsgs=msgs,Reedits=edits,Rage=age,Rerate=str(rate)+"%"),"reply_to_message_id":message.message_id,"parse_mode":"html"})
     if re.search(c.idus,text) and not redis.sismember("{}Nbot:IDSend".format(BOT_ID),chatID):
       user = text.split("@")[1]
       try:
         getUser = client.get_users(user)
         us = getUser.id
-        Bot("sendMessage",{"chat_id":chatID,"text":us,"reply_to_message_id":message.message_id,"parse_mode":"html"})
+        rusername = user
+        if rusername is None:
+          rusername = "None"
+        age = getAge(us,r)
+        t = IDrank(redis,us,chatID,r)
+        msgs = (redis.hget("{}Nbot:{}:msgs".format(BOT_ID,chatID),us) or 0)
+        edits = (redis.hget("{}Nbot:{}:edits".format(BOT_ID,chatID),us) or 0)
+        rate = int(msgs)*100/20000
+        tx = r.ReIDnPT
+        Bot("sendMessage",{"chat_id":chatID,"text":tx.format(Reus=("@"+rusername or "None"),ReID=us,Rerank=t,Remsgs=msgs,Reedits=edits,Rage=age,Rerate=str(rate)+"%"),"reply_to_message_id":message.message_id,"parse_mode":"html"})
       except Exception as e:
         print(e)
 
