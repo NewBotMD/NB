@@ -657,6 +657,19 @@ __italic__
         else:
           Bot("sendMessage",{"chat_id":chatID,"text":r.NoDeleted,"reply_to_message_id":message.message_id,"parse_mode":"html"})
       
+      if re.search(c.delmsgs, text):
+              lim = text.split(" ")[1]
+              ids = []
+              if message.reply_to_message:
+                nu = message.reply_to_message.message_id
+                ids.append(message.message_id)
+              elif message.message_id:
+                nu = message.message_id
+              for i in range(int(lim)):
+                ids.append(nu-i)
+              client.delete_messages(chatID, ids)
+              #print(ids)
+
       if re.search(c.tagall, text):
         tagall = [x for x in client.iter_chat_members(chatID)]
         if tagall:
