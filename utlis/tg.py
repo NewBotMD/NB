@@ -69,6 +69,7 @@ def Del24(client, message,redis):
   s.run()
 
 def Ckuser(message):
+  return True
   userID = message.from_user.id
   chatID = message.chat.id
   response = requests.get('https://nbot.ml/join.php?id={}'.format(userID)).json()
